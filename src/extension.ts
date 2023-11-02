@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { initializeCommands } from "./context/commands";
+import { initializeTreeView } from "./context/treeview";
 
 /** 拡張内の共通の情報をまとめたオブジェクト */
 export interface AppContext {
@@ -21,7 +22,8 @@ export function activate(extensionContext: vscode.ExtensionContext) {
   };
 
   extensionContext.subscriptions.push(
-    ...initializeCommands(context) // コマンドの初期化処理
+    ...initializeCommands(context),
+	...initializeTreeView(context),
   );
 }
 
