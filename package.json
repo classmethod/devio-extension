@@ -20,8 +20,39 @@
       {
         "command": "devio-extension.new-article",
         "title": "DevIO: New Article"
+      },
+      {
+        "command": "devio-extension.refresh-entry",
+        "title": "Refresh",
+        "icon": {
+          "light":"resources/refresh.png",
+          "dark":"resources/refresh.png"
+        }      
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "devio-extension.refresh-entry",
+          "when": "view == devio-articles-treeview",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Contentful Settings",
+      "properties": {
+        "contentful.general": {
+          "type": "object",
+          "default": {
+            "accessToken": "Access Token",
+            "spaceId": "Space ID"
+          },
+          "description": "Contentful Settings"
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -36,6 +67,11 @@
         {
           "id": "devio-articles-treeview",
           "name": "Articles"
+        },
+        {
+          "type": "webview",
+          "id": "devio-webview",
+          "name": "WebView Sidebar"
         }
       ]
     }

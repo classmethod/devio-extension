@@ -8,6 +8,15 @@ type TreeDataProvider = vscode.TreeDataProvider<vscode.TreeItem>;
 export class ArticlesTreeViewProvider implements TreeDataProvider {
   private readonly context: AppContext;
 
+  private _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined>()
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event
+
+  public items: vscode.TreeItem[] = []
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire(undefined);
+  }
+
   constructor(context: AppContext) {
     this.context = context;
   }

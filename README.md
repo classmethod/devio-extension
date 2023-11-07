@@ -69,3 +69,14 @@ You can author your README using Visual Studio Code. Here are some useful editor
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+
+## Settings
+
+add contentful info in settings.json
+
+```json
+"contentful.general": {
+    "accessToken": "<your accecc token>",
+    "spaceId": "<your space id>"
+}
+```

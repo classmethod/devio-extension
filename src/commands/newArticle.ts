@@ -29,6 +29,16 @@ const generateArticleTemplate = () =>
 /** 記事の新規作成コマンドの実装 */
 export const newArticleCommand = (context: AppContext) => {
   return async () => {
+
+    //test
+    // const entryId = await vscode.window.showInputBox({
+    //   title: 'Entry ID?'
+    // });
+
+    // if (entryId !== undefined) {
+    //   vscode.window.showInformationMessage(`entryId : ${entryId}`);
+    // }
+
     const { articlesFolderUri } = context;
 
     // 記事のテンプレート文字列を作成
