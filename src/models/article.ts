@@ -1,25 +1,23 @@
 import * as vscode from "vscode";
+import * as util from "../util";
+
 import { AppContext } from "../extension";
-import { parse as parseYaml } from "yaml";
 
-/** 記事のFrontMatterの情報 */
-export interface Article {
-  slug?: string;
-  type?: "tech" | "idea";
-  title?: string;
-  emoji?: string;
-  topics?: string[];
-  published?: boolean;
-  published_at?: string;
-  publication_name?: string;
-}
 
-/** 記事の情報を含んだ型 */
-export interface ArticleContent {
-  value: Article;
+export class ArticleContent {
   uri: vscode.Uri;
-  filename: string;
-  markdown: string;
+  title: string;
+  content: string;
+  slug: string;
+  language: string;
+
+  constructor(uri: vscode.Uri, title: string, content: string, slug: string, language: string = 'ja') {
+    this.uri = uri;
+    this.title = title;
+    this.content = content;
+    this.slug = slug;
+    this.language = language;
+  }
 }
 
 /** 記事のエラーを扱うクラス */
@@ -32,84 +30,46 @@ export class ArticleContentError extends Error {
 /** 取得処理の結果型 */
 export type ArticleContentLoadResult = ArticleContent | ArticleContentError;
 
-/** front matterを取得するための正規表現 */
-export const FRONT_MATTER_PATTERN = /^(-{3}(?:\n|\r\n)([\w\W]+?)(?:\n|\r\n)-{3})/;
 
-/** Front Matterをオブジェクトに変換する */
-export function parseFrontMatter(text: string): Record<string, string | undefined> {
-  const frontMatter = FRONT_MATTER_PATTERN.exec(text)?.[2];
-  const result = frontMatter ? parseYaml(frontMatter) : {};
+/** 記事情報を取得する */
+export async function loadArticleContent(
+  context: AppContext,
+  uri: vscode.Uri
+): Promise<ArticleContentLoadResult> {
 
-  if (typeof result !== "object") return {};
-  if (Array.isArray(result)) return {};
+  const filename = uri.path.split("/").slice(-1)[0];
+  //ファイル名から.mdを除去
+  const entryId = filename.replace(/\.md$/, '');
 
-  return result;
+  //Stateから取得
+  const article = util.getState<ArticleContent>(context.extension, entryId);
+  if (article === undefined) {
+    return new ArticleContentError("記事の取得に失敗しました");
+  } else {
+    return article;
+  }
 }
 
-/** 記事のタイトルを返す */
-export function getArticleTitle({
-    emoji,
-    title,
-    filename,
-  }: {
-    emoji?: string;
-    title?: string;
-    filename?: string;
-  }): string {
-    if (title) return `${emoji}${title}`;
-    if (filename) return `${emoji}${filename}`;
-  
-    return "タイトルが設定されていません";
+/** 記事の一覧を返す */
+export async function getArticleContents(
+  context: AppContext
+): Promise<ArticleContentLoadResult[]> {
+  const rootUri = context.articlesFolderUri;
+
+  // `./articles` 内のファイル一覧を取得
+  const files = await vscode.workspace.fs.readDirectory(rootUri);
+  // markdown ファイルのみの vscode.Uri 配列を返す
+  const markdowns = files.flatMap((file) =>
+    file[1] === vscode.FileType.File && file[0].endsWith(".md")
+      ? [vscode.Uri.joinPath(rootUri, file[0])]
+      : []
+  );
+
+  const results = [];
+  for (const uri of markdowns) {
+    const result = await loadArticleContent(context, uri);
+    results.push(result);
   }
 
-  
-  /** 記事情報を取得する */
- export async function loadArticleContent(
-    uri: vscode.Uri
-  ): Promise<ArticleContentLoadResult> {
-    try {
-      return vscode.workspace
-        .openTextDocument(uri)
-        .then((doc) => createArticleContent(uri, doc.getText()));
-    } catch {
-      return new ArticleContentError("記事の取得に失敗しました");
-    }
-  }
-
-  /** Markdown文字列から記事データを作成する */
- export  function createArticleContent(
-    uri: vscode.Uri,
-    text: string
-  ): ArticleContent {
-    const filename = uri.path.split("/").slice(-1)[0];
- 
-    return {
-      uri,
-      filename,
-      value: {
-        slug: filename.replace(".md", ""),
-        ...parseFrontMatter(text),
-      },
-      markdown: text.replace(FRONT_MATTER_PATTERN, ""),
-    };
-  };
-
-  /** 記事の一覧を返す */
- export async function getArticleContents(
-    context: AppContext
-  ): Promise<ArticleContentLoadResult[]> {
-    const rootUri = context.articlesFolderUri;
- 
-    // `./articles` 内のファイル一覧を取得
-    const files = await vscode.workspace.fs.readDirectory(rootUri);
- 
-    // markdown ファイルのみの vscode.Uri 配列を返す
-    const markdowns = files.flatMap((file) =>
-      file[1] === vscode.FileType.File && file[0].endsWith(".md")
-        ? [vscode.Uri.joinPath(rootUri, file[0])]
-        : []
-    );
- 
-    // 取得結果の配列を返す
-    return Promise.all(markdowns.map((uri) => loadArticleContent(uri)));
-  }
+  return results;
+}

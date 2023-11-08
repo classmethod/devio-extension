@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ArticleContent, getArticleTitle } from "../models/article";
+import { ArticleContent } from "../models/article";
 
 /** 記事を表示するTreeItem */
 export class ArticleTreeItem extends vscode.TreeItem {
@@ -10,8 +10,8 @@ export class ArticleTreeItem extends vscode.TreeItem {
     this.resourceUri = content.uri;
 
     // 記事のタイトルを TreeItem に表示する
-    this.label = content.filename;
-    
+    this.label = content.title;
+
     // TreeItem をクリックしたときに対応するファイルを開く
     this.command = {
       command: "vscode.open",
@@ -20,10 +20,6 @@ export class ArticleTreeItem extends vscode.TreeItem {
     };
 
     // 記事の状態を表示する
-    this.description = [
-      content.value.published ? "公開" : "非公開",
-      content.value.slug,
-    ]
-      .join("・");
+    this.description = [content.slug,].join("・");
   }
 }

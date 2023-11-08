@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as util from "../util";
+import { ArticleContent } from "../models/article";
 import { AppContext } from "../extension";
 import { ContentfulClient } from "../contentful/client";
 
@@ -22,20 +23,19 @@ export const pullArticleCommand = (context: AppContext) => {
       let space = await apiClient.getSpace(spaceId);
       let env = await space.getEnvironment('master');
       let entry = await env.getEntry(entryId);
-      let content = entry.fields.content;
+      let title = entry.fields.title['en-US'];
+      let content = entry.fields.content['en-US'];
+      let slug = entry.fields.slug['en-US'];
 
       // 記事内容
-      const text = new TextEncoder().encode(content['en-US']);
+      const text = new TextEncoder().encode(content);
       // 記事の保存先のUriを作成
       const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
       // ファイルを作成
       await vscode.workspace.fs.writeFile(fileUri, text);
-
-      //Stateに保存
-      // let obj = new Foo("aaaa");
-      // util.saveState<Foo>(extension,entryId,obj);
-    
-
+      //Stateに保存    
+      let article = new ArticleContent(fileUri,title,content,slug);
+      util.saveState<ArticleContent>(extension,entryId,article);
       //Treeview update
       await vscode.commands.executeCommand("devio-extension.refresh-entry");
 
