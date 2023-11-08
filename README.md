@@ -80,3 +80,8 @@ add contentful info in settings.json
     "spaceId": "<your space id>"
 }
 ```
+
+## TODO
+
+1.記事データ取得(pull)
+2.記事データ更新

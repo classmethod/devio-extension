@@ -30,27 +30,26 @@ const generateArticleTemplate = () =>
 export const newArticleCommand = (context: AppContext) => {
   return async () => {
 
-    //test
-    // const entryId = await vscode.window.showInputBox({
-    //   title: 'Entry ID?'
-    // });
-
-    // if (entryId !== undefined) {
-    //   vscode.window.showInformationMessage(`entryId : ${entryId}`);
-    // }
-
     const { articlesFolderUri } = context;
 
-    // 記事のテンプレート文字列を作成
-    const text = new TextEncoder().encode(generateArticleTemplate());
+    const entryId = await vscode.window.showInputBox({
+      title: 'Entry ID?'
+    });
 
-    // 記事の保存先のUriを作成
-    const aritcleSlug = generateSlug()
-    const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${aritcleSlug}.md`)
+    if (entryId !== undefined) {
+      vscode.window.showInformationMessage(`entryId : ${entryId}`);
+      // 記事のテンプレート文字列を作成
+      const text = new TextEncoder().encode(generateArticleTemplate());
 
-    // ファイルを作成
-    await vscode.workspace.fs.writeFile(fileUri, text);
+      // 記事の保存先のUriを作成
+      const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
 
-    vscode.window.showInformationMessage("記事を作成しました");
+      // ファイルを作成
+      await vscode.workspace.fs.writeFile(fileUri, text);
+
+      vscode.window.showInformationMessage("記事を作成しました");
+    }
+
+
   };
 };

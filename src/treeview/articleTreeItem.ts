@@ -10,12 +10,8 @@ export class ArticleTreeItem extends vscode.TreeItem {
     this.resourceUri = content.uri;
 
     // 記事のタイトルを TreeItem に表示する
-    this.label = getArticleTitle({
-      emoji: content.value.emoji,
-      title: content.value.title,
-      filename: content.filename,
-    });
-
+    this.label = content.filename;
+    
     // TreeItem をクリックしたときに対応するファイルを開く
     this.command = {
       command: "vscode.open",

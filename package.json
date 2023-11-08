@@ -22,12 +22,16 @@
         "title": "DevIO: New Article"
       },
       {
+        "command": "devio-extension.pull-article",
+        "title": "DevIO: Get Article from Contentful"
+      },
+      {
         "command": "devio-extension.refresh-entry",
         "title": "Refresh",
         "icon": {
-          "light":"resources/refresh.png",
-          "dark":"resources/refresh.png"
-        }      
+          "light": "resources/refresh.png",
+          "dark": "resources/refresh.png"
+        }
       }
     ],
     "menus": {
@@ -103,6 +107,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "contentful-management": "^11.4.0",
     "yaml": "^2.3.3"
   }
 }

@@ -17,6 +17,7 @@ export class ArticlesTreeViewProvider implements TreeDataProvider {
     this._onDidChangeTreeData.fire(undefined);
   }
 
+
   constructor(context: AppContext) {
     this.context = context;
   }
@@ -28,18 +29,19 @@ export class ArticlesTreeViewProvider implements TreeDataProvider {
 
   // 表示したい TreeItem の配列を返します
   async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
-    if (element) return [element];
+    if (element) {
+      return [element];
+    }
 
     // 記事一覧情報を取得する
     const articleContents = await getArticleContents(this.context);
 
     // 表示する TreeItem の配列を作成
-    const treeItems = articleContents.map((result:any) =>
-      ArticleContentError.isError(result)
+    const treeItems = articleContents.map((result: any) => {
+      return ArticleContentError.isError(result)
         ? new vscode.TreeItem("記事の取得に失敗しました")
-        : new ArticleTreeItem(result)
-    );
-
+        : new ArticleTreeItem(result);
+    });
     return treeItems;
   }
 }
