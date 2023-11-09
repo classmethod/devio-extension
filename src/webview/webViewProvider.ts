@@ -23,7 +23,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             <head>
             </head>
             <body>
-                no selected
+                No Selected Article
             </body>
             </html>
             `;
@@ -39,17 +39,30 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                         width: 100%;
                     }
                 </style>
+                <script>
+                const vscode = acquireVsCodeApi();
+                function runCommand() {
+                    const title = document.getElementById('title').value;
+                    const slug = document.getElementById('slug').value;
+                    const language = document.getElementById('language').value;
+                    
+                    vscode.postMessage({
+                        command: 'updateArticle',
+                        title: title,
+                        slug: slug,
+                        language: language
+                    });
+                }
+                </script>
             </head>
             <body>
-                <form>
-                    <label for="title">Title:</label><br>
-                    <input type="text" id="title" name="title" value="${article.title}"><br>
-                    <label for="slug">Slug:</label><br>
-                    <input type="text" id="slug" name="slug" value="${article.slug}"><br>
-                    <label for="language">Language:</label><br>
-                    <input type="text" id="language" name="language" value="${article.language}"><br>
-                    <input type="submit" value="Submit">
-                </form>
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title" value="${article.title}"><br>
+                <label for="slug">Slug:</label><br>
+                <input type="text" id="slug" name="slug" value="${article.slug}"><br>
+                <label for="language">Language:</label><br>
+                <input type="text" id="language" name="language" value="${article.language}"><br>
+                <button onclick="runCommand();">Run Command</button>
             </body>
             </html>
         `;
@@ -61,6 +74,19 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.options = {
             enableScripts: true,
         };
+
+        // Webviewからのメッセージをハンドル
+        webviewView.webview.onDidReceiveMessage(
+            message => {
+                switch (message.command) {
+                    case 'updateArticle': // HTML側でpostMessageに指定したコマンド
+                        vscode.commands.executeCommand('devio-extension.update-article', message.title, message.slug, message.language);
+                        break;
+                }
+            },
+            undefined,
+            this.context.extension.subscriptions
+        );
         webviewView.webview.html = this.getHtmlForWebview();
     }
 
