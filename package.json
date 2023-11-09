@@ -75,7 +75,7 @@
         {
           "type": "webview",
           "id": "devio-webview",
-          "name": "WebView Sidebar"
+          "name": "Article Infomation"
         }
       ]
     }

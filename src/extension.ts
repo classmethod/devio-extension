@@ -29,20 +29,6 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		return vscode.window.showErrorMessage("ワークスペースがありません");
 	}
 
-
-	let obj = new Foo("aaaa");
-	util.saveState<Foo>(extensionContext,"hello",obj);
-
-	let res = util.getState<Foo>(extensionContext,"hello");
-	console.log("11111");
-	console.log(res);
-
-	//プロパティ確認
-	// const confGeneral = vscode.workspace.getConfiguration('contentful.general');
-	// vscode.window.showInformationMessage('contentful.general > '
-	// 	+ 'Access Token: ' + confGeneral.get('accessToken')
-	// 	+ ', Space Id: ' + confGeneral.get('spaceId'));
-
 	const context: AppContext = {
 		extension: extensionContext,
 		articlesFolderUri: vscode.Uri.joinPath(workspaceUri, "articles"),
@@ -50,10 +36,11 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 	};
 
 	const tviewProvider = new ArticlesTreeViewProvider(context);
+	const webViewProvider = new WebViewProvider(context);
 	extensionContext.subscriptions.push(
 		...initializeCommands(context,tviewProvider),
-		...initializeTreeView(context,tviewProvider),
-		...initializeWebView(context),
+		...initializeTreeView(context,tviewProvider,webViewProvider),
+		...initializeWebView(context,webViewProvider),
 	);
 	
 	//ボタンを押すとコマンド実行

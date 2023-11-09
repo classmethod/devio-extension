@@ -37,9 +37,8 @@ export async function loadArticleContent(
   uri: vscode.Uri
 ): Promise<ArticleContentLoadResult> {
 
-  const filename = uri.path.split("/").slice(-1)[0];
-  //ファイル名から.mdを除去
-  const entryId = filename.replace(/\.md$/, '');
+  //entryIdを取得
+  const entryId = util.getEntryIdFromUri(uri);
 
   //Stateから取得
   const article = util.getState<ArticleContent>(context.extension, entryId);

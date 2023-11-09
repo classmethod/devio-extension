@@ -1,14 +1,44 @@
 import * as vscode from "vscode";
+import * as util from "../util";
 import { AppContext } from "../extension";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
+import { WebViewProvider } from "../webview/webViewProvider";
 
-export const initializeTreeView = (context: AppContext, tvProvider:ArticlesTreeViewProvider): vscode.Disposable[] => {
-  let panel: vscode.WebviewPanel | undefined;
+export const initializeTreeView = (context: AppContext, tvProvider: ArticlesTreeViewProvider,
+  webvProvider: WebViewProvider): vscode.Disposable[] => {
+  //let panel: vscode.WebviewPanel | undefined;
 
   const treeView = vscode.window.createTreeView("devio-articles-treeview", {
     treeDataProvider: tvProvider,
   });
 
+  let panel: vscode.WebviewView | undefined;
+
+  treeView.onDidChangeSelection((event) => {
+    const selectedItem = event.selection[0]; // 選択されたアイテム
+    if(selectedItem.resourceUri !== undefined) {
+      const entryId = util.getEntryIdFromUri(selectedItem.resourceUri);
+      webvProvider.updateContent(entryId);
+    }
+
+    //webvProvider.updateContent(selectedItem.label?.toString());
+    // if (panel) {
+    //     panel.webview.html = `<html><body>${selectedItem.label}</body></html>`;
+    //     panel.show(true);
+    // } else {
+    //     panel = window.createWebviewView('myWebview', {
+    //         treeDataProvider: myTreeDataProvider,
+    //         webviewOptions: {
+    //             retainContextWhenHidden: true
+    //         }
+    //     });
+
+    //     context.subscriptions.push(panel);
+
+    //     panel.webview.html = '<html><body>Webview Content</body></html>';
+    //     panel.show(true);
+    // }
+  });
   // treeView.onDidChangeSelection(async (e) => {
   //   const node = e.selection[0];
   //   if (node) {

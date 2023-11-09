@@ -23,10 +23,12 @@ export function getState<T>(extensionContext: vscode.ExtensionContext, key: stri
 	return state.get<T>(key);
 }
 
-// function convertToString(input: string | object): string {
-//     if (typeof input === 'string') {
-//         return input;
-//     } else {
-//         return JSON.stringify(input);
-//     }
-// }
+
+export function getEntryIdFromUri(uri: vscode.Uri) : string {
+	if(!uri) {
+		throw new Error('uri is invalid.'); 
+	}
+	//ファイル名を取得して.mdを除去
+	const filename = uri.path.split("/").slice(-1)[0];
+	return filename.replace(/\.md$/, '');
+}

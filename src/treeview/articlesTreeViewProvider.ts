@@ -8,10 +8,10 @@ type TreeDataProvider = vscode.TreeDataProvider<vscode.TreeItem>;
 export class ArticlesTreeViewProvider implements TreeDataProvider {
   private readonly context: AppContext;
 
-  private _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined>()
-  readonly onDidChangeTreeData = this._onDidChangeTreeData.event
+  private _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined>();
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  public items: vscode.TreeItem[] = []
+  public items: vscode.TreeItem[] = [];
 
   refresh(): void {
     this._onDidChangeTreeData.fire(undefined);
@@ -27,7 +27,7 @@ export class ArticlesTreeViewProvider implements TreeDataProvider {
     return element;
   }
 
-  // 表示したい TreeItem の配列を返します
+  // 表示するTreeItemの配列を返す
   async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
     if (element) {
       return [element];
