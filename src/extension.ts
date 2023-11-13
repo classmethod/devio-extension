@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import { initializeCommands } from "./context/commands";
 import { initializeTreeView } from "./context/treeview";
 import { initializeWebView } from "./context/webview";
+import * as listeners from "./context/listeners";
+
 import { WebViewProvider } from "./webview/webViewProvider";
 import { ArticlesTreeViewProvider } from "./treeview/articlesTreeViewProvider";
 import * as util from "./util";
@@ -41,6 +43,7 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		...initializeCommands(context,tviewProvider),
 		...initializeTreeView(context,tviewProvider,webViewProvider),
 		...initializeWebView(context,webViewProvider),
+		listeners.initializeMarkdownSaveListener(context)
 	);
 	
 	//ボタンを押すとコマンド実行

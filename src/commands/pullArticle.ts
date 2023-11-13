@@ -17,12 +17,7 @@ export const pullArticleCommand = (context: AppContext) => {
 
       //Contentfulから記事を取得
       const contentfulClient = ContentfulClient.getInstance();
-      const apiClient = contentfulClient.getApiClient();
-      const spaceId = contentfulClient.getSpaceId();
-
-      let space = await apiClient.getSpace(spaceId);
-      let env = await space.getEnvironment('master');
-      let entry = await env.getEntry(entryId);
+      let entry = await contentfulClient.getEntry(entryId);
       let title = entry.fields.title['en-US'];
       let content = entry.fields.content['en-US'];
       let slug = entry.fields.slug['en-US'];

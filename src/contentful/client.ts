@@ -3,23 +3,23 @@ import * as contentful from "contentful-management";
 
 export class ContentfulClient {
     private static ins: ContentfulClient;
-    private token:string;
-    private spaceId:string;
-    private apiClient:contentful.ClientAPI;
+    private token: string;
+    private spaceId: string;
+    private apiClient: contentful.ClientAPI;
 
     private constructor() {
         const confGeneral = vscode.workspace.getConfiguration('contentful.general');
 
-        const token:string = confGeneral.get('accessToken') ?? '';
-        const spaceId:string = confGeneral.get('spaceId') ?? '';
+        const token: string = confGeneral.get('accessToken') ?? '';
+        const spaceId: string = confGeneral.get('spaceId') ?? '';
 
-        if(token === '' || spaceId === '') {
+        if (token === '' || spaceId === '') {
             throw new Error(`token : ${token}, spaceId : ${spaceId}`);
         } else {
             this.token = token;
             this.spaceId = spaceId;
         }
-        
+
         this.apiClient = contentful.createClient({
             accessToken: this.token,
         });
@@ -33,12 +33,22 @@ export class ContentfulClient {
         return ContentfulClient.ins;
     }
 
-    public getApiClient():contentful.ClientAPI{
+    public getApiClient(): contentful.ClientAPI {
         return this.apiClient;
     }
 
-    public getSpaceId():string{
+    public getSpaceId(): string {
         return this.spaceId;
     }
 
+    /**
+     * EntryIDを指定してContentfulからEntityを取得する.
+     * @param entryId Entry ID
+     * @returns Contentful Entity
+     */
+    public async getEntry(entryId: string): Promise<contentful.Entry> {
+        let space = await this.apiClient.getSpace(this.spaceId);
+        let env = await space.getEnvironment('master');
+        return env.getEntry(entryId);
+    }
 }

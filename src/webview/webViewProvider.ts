@@ -28,7 +28,6 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             </html>
             `;
         } else {
-
             return `
             <!DOCTYPE html>
             <html>
