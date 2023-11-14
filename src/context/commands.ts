@@ -5,6 +5,7 @@ import { updateArticleCommand } from "../commands/updateArticle";
 import { listArticleCommand } from "../commands/listArticle";
 import { pullArticleCommand } from "../commands/pullArticle";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
+import { ContentfulClient } from "../contentful/client";
 
 export const initializeCommands = (context: AppContext, tviewProvider: ArticlesTreeViewProvider): vscode.Disposable[] => {
   return [
@@ -26,10 +27,17 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
     // Update article
     vscode.commands.registerCommand(
       "devio-extension.update-article",
-        updateArticleCommand(context)
+      updateArticleCommand(context)
     ),
+    // Open Browser
+    vscode.commands.registerCommand(
+      "devio-extension.open-browser",
+      () => {
+        const spaceId = ContentfulClient.getInstance().getSpaceId();
+        const url = vscode.Uri.parse(`https://app.contentful.com/spaces/${spaceId}/home`);
+        vscode.env.openExternal(url);
+      }),
     // Refresh Treeview
     vscode.commands.registerCommand('devio-extension.refresh-entry',
       () => tviewProvider.refresh())];
-
 };

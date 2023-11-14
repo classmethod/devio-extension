@@ -12,15 +12,7 @@ import * as util from "./util";
 export interface AppContext {
 	extension: vscode.ExtensionContext
 	articlesFolderUri: vscode.Uri;
-	conf:vscode.WorkspaceConfiguration
-}
-
-class Foo {
-    name: string;
-
-    constructor(name: string) {
-        this.name = name;
-    }
+	conf: vscode.WorkspaceConfiguration
 }
 
 // 拡張がアクティベートされる時に実行される関数
@@ -34,18 +26,18 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 	const context: AppContext = {
 		extension: extensionContext,
 		articlesFolderUri: vscode.Uri.joinPath(workspaceUri, "articles"),
-		conf:vscode.workspace.getConfiguration('contentful.general')
+		conf: vscode.workspace.getConfiguration('contentful.general')
 	};
 
 	const tviewProvider = new ArticlesTreeViewProvider(context);
 	const webViewProvider = new WebViewProvider(context);
 	extensionContext.subscriptions.push(
-		...initializeCommands(context,tviewProvider),
-		...initializeTreeView(context,tviewProvider,webViewProvider),
-		...initializeWebView(context,webViewProvider),
+		...initializeCommands(context, tviewProvider),
+		...initializeTreeView(context, tviewProvider, webViewProvider),
+		...initializeWebView(context, webViewProvider),
 		listeners.initializeMarkdownSaveListener(context)
 	);
-	
+
 	//ボタンを押すとコマンド実行
 	// const button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 	// button.command = 'devio-extension.list-article';
