@@ -72,16 +72,54 @@ You can author your README using Visual Studio Code. Here are some useful editor
 
 ## Settings
 
-add contentful info in settings.json
+settings.jsonに下記情報をセットしてください。
 
 ```json
 "contentful.general": {
     "accessToken": "<your accecc token>",
     "spaceId": "<your space id>"
+    "entryId": "<your entry id>"
 }
 ```
 
+entryIdは、
+Contentfulの自分のAuthor記事でわかります.  
+ここから自分の記事へ移動して確認してください。
+https://app.contentful.com/spaces/ct0aopd36mqt/entries?id=VqeMNgEC2kOMMmVk&title=Overview&contentTypeId=authorProfile&order.fieldId=updatedAt&order.direction=descending&displayedFieldIds=contentType&displayedFieldIds=updatedAt&displayedFieldIds=author&page=0
+
+## Usage
+
+### 記事の作成
+    // ドラフトでエントリーを作成する。
+    // let draftEntry = environment.createEntry('blogPost', {
+    //     fields: {
+    //         title: { 'en-US': 'apiで作成' },
+    //         slug: { 'en-US': 'api-test-test' },
+    //         content: { 'en-US': '## Introduction\napiで作成' },
+    //         language: { 'en-US': 'ja' },
+    //         author: { 'en-US': {
+    //             sys: { type: 'Link', linkType: 'Entry', id: '49IIdXnE4OEYkdApo4KL70' }
+    //           } }
+    //       }
+    // });
+
+
+### 記事の取得
+
+### 画像アップロード
+
+現在VSCodeから直接画像をアップロードする方法はありません。
+そのため、コンテキストメニューかコマンドパレットで  
+「DevIO: Open DevIO Contentful Home」
+を選択し、Contentfulの画面で画像をアップロードして
+画像URLを取得してください。  
+
+### 記事の公開
+
+
 ## TODO
 
-1.記事データ取得(pull)
-2.記事データ更新
+記事作成
+プレビュー
+publish
+メタデータ更新？（タグとか）

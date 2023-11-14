@@ -19,7 +19,11 @@
       },
       {
         "command": "devio-extension.new-article",
-        "title": "DevIO: New Article"
+        "title": "DevIO: Create New Article",
+        "icon": {
+          "light": "resources/plus.png",
+          "dark": "resources/plus.png"
+        }
       },
       {
         "command": "devio-extension.pull-article",
@@ -28,8 +32,7 @@
       {
         "command": "devio-extension.open-browser",
         "title": "DevIO: Open DevIO Contentful Home"
-      },
-      
+      },      
       {
         "command": "devio-extension.refresh-entry",
         "title": "Refresh",
@@ -42,6 +45,11 @@
     "menus": {
       "view/title": [
         {
+          "command": "devio-extension.new-article",
+          "when": "view == devio-articles-treeview",
+          "group": "navigation"
+        },
+        {
           "command": "devio-extension.refresh-entry",
           "when": "view == devio-articles-treeview",
           "group": "navigation"
@@ -52,7 +60,8 @@
             "command": "devio-extension.open-browser",
             "group": "navigation"
         }
-    ]    },
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "Contentful Settings",

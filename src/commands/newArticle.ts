@@ -1,55 +1,34 @@
 import * as vscode from "vscode";
+import * as util from "../util";
+import { ArticleContent } from "../models/article";
 import { AppContext } from "../extension";
-
-/** 14文字のランダムな文字列を返す */
-export const generateSlug = (): string => {
-  const a = Math.random().toString(16).substring(2);
-  const b = Math.random().toString(16).substring(2);
-  return `${a}${b}`.slice(0, 14);
-};
-
-/** ランダムに Emoji を返す */
-export const pickRandomEmoji = (): string => {
-  const emojiList =["😺","📘","📚","📑","😊","😎","👻","🤖","😸","😽","💨","💬","💭","👋", "👌","👏","🙌","🙆","🐕","🐈","🦁","🐷","🦔","🐥","🐡","🐙","🍣","🕌","🌟","🔥","🌊","🎃","✨","🎉","⛳","🔖","📝","🗂","📌"]; // prettier-ignore
-  return emojiList[Math.floor(Math.random() * emojiList.length)];
-};
-
-/** 記事のテンプレート文字列を生成する関数 */
-const generateArticleTemplate = () =>
-  [
-    "---",
-    `title: ""`,
-    `emoji: "${pickRandomEmoji()}"`,
-    `type: "tech" # tech: 技術記事 / idea: アイデア`,
-    "topics: []",
-    `published: false`,
-    "---",
-  ].join("\n") + "\n";
+import { ContentfulClient } from "../contentful/client";
 
 /** 記事の新規作成コマンドの実装 */
 export const newArticleCommand = (context: AppContext) => {
   return async () => {
 
-    const { articlesFolderUri } = context;
+    const { articlesFolderUri, extension } = context;
+    //Contentfulに記事を作成
+    const contentfulClient = ContentfulClient.getInstance();
+    let newEntry = await contentfulClient.createNewEntry();
+    const entryId = newEntry.sys.id;
+    const title = newEntry.fields.title['en-US'];
+    const content = newEntry.fields.content['en-US'];
+    const slug = newEntry.fields.slug['en-US'];
+    // 記事内容
+    const text = new TextEncoder().encode(content);
+    // 記事の保存先のUriを作成
+    const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
+    // ファイルを作成
+    await vscode.workspace.fs.writeFile(fileUri, text);
+    //Stateに保存    
+    let article = new ArticleContent(fileUri, title, content, slug);
+    util.saveState<ArticleContent>(extension, entryId, article);
+    //Treeview update
+    await vscode.commands.executeCommand("devio-extension.refresh-entry");
 
-    const entryId = await vscode.window.showInputBox({
-      title: 'Entry ID?'
-    });
-
-    if (entryId !== undefined) {
-      vscode.window.showInformationMessage(`entryId : ${entryId}`);
-      // 記事のテンプレート文字列を作成
-      const text = new TextEncoder().encode(generateArticleTemplate());
-
-      // 記事の保存先のUriを作成
-      const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
-
-      // ファイルを作成
-      await vscode.workspace.fs.writeFile(fileUri, text);
-
-      vscode.window.showInformationMessage("記事を作成しました");
-    }
-
+    vscode.window.showInformationMessage("記事を作成しました");
 
   };
 };
