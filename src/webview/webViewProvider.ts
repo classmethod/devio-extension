@@ -41,12 +41,14 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <script>
                 const vscode = acquireVsCodeApi();
                 function runCommand() {
+                    const entryId = document.getElementById('entryId').value;
                     const title = document.getElementById('title').value;
                     const slug = document.getElementById('slug').value;
                     const language = document.getElementById('language').value;
                     
                     vscode.postMessage({
                         command: 'updateArticle',
+                        entryId : entryId,
                         title: title,
                         slug: slug,
                         language: language
@@ -61,7 +63,10 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <input type="text" id="slug" name="slug" value="${article.slug}"><br>
                 <label for="language">Language:</label><br>
                 <input type="text" id="language" name="language" value="${article.language}"><br>
-                <button onclick="runCommand();">Run Command</button>
+                <input type="hidden" id="entryId" name="entryId" value="${article.entryId}">
+                <button onclick="runCommand();">Update Article</button>
+                <br>
+                ※記事本文はファイルを保存した時点で反映されます
             </body>
             </html>
         `;
@@ -79,7 +84,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             message => {
                 switch (message.command) {
                     case 'updateArticle': // HTML側でpostMessageに指定したコマンド
-                        vscode.commands.executeCommand('devio-extension.update-article', message.title, message.slug, message.language);
+                        vscode.commands.executeCommand('devio-extension.update-article', message.entryId,message.title, message.slug, message.language);
                         break;
                 }
             },

@@ -13,7 +13,6 @@ export function initializeMarkdownSaveListener(context: AppContext): vscode.Disp
     let disposable = vscode.workspace.onDidSaveTextDocument(async (document: vscode.TextDocument) => {
         if (document.languageId === 'markdown') {
             const entryId = util.getEntryIdFromUri(document.uri);
-            console.log(`entryId:${entryId}`);
 
             //元entry取得
             const contentfulClient = ContentfulClient.getInstance();

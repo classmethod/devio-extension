@@ -10,9 +10,11 @@ export class ArticleContent {
   content: string;
   slug: string;
   language: string;
+  entryId:string;
 
   constructor(uri: vscode.Uri, title: string, content: string, slug: string, language: string = 'ja') {
     this.uri = uri;
+    this.entryId = util.getEntryIdFromUri(uri);
     this.title = title;
     this.content = content;
     this.slug = slug;
