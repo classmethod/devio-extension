@@ -1,9 +1,11 @@
 import * as vscode from "vscode";
 import { AppContext } from "../extension";
-import { newArticleCommand } from "../commands/newArticle";
-import { updateArticleCommand } from "../commands/updateArticle";
-import { listArticleCommand } from "../commands/listArticle";
-import { pullArticleCommand } from "../commands/pullArticle";
+import {
+  newArticleCommand,
+  updateArticleCommand,
+  listArticleCommand,
+  pullArticleCommand
+} from "../commands/article";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
 import { ContentfulClient } from "../contentful/client";
 

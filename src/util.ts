@@ -45,3 +45,19 @@ export function diff(text1: string, text2: string): Diff[] {
 	dmp.diff_cleanupSemantic(diffs);
 	return diffs;
 }
+
+/**
+ * Check if a file exists at the specified URI.
+ *
+ * @param {vscode.Uri} uri - The URI of the file to check.
+ * @return {Promise<boolean>} Promise that resolves with true if the file exists, false otherwise.
+ */
+export async function fileExists(uri: vscode.Uri): Promise<boolean> {
+	try {
+		await vscode.workspace.fs.stat(uri);
+		return true;
+	} catch {
+		return false;
+	}
+  }
+  
