@@ -77,8 +77,9 @@ settings.jsonに下記情報をセットしてください。
 ```json
 "contentful.general": {
     "accessToken": "<your accecc token>",
-    "spaceId": "<your space id>"
-    "entryId": "<your entry id>"
+    "spaceId": "<your space id>",
+    "entryId": "<your entry id>",
+    "diff": true | false
 }
 ```
 
