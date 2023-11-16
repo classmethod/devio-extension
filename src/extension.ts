@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as fs from 'fs';
 import { initializeCommands } from "./context/commands";
 import { initializeTreeView } from "./context/treeview";
 import { initializeWebView } from "./context/webview";
@@ -23,9 +24,16 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		return vscode.window.showErrorMessage("ワークスペースがありません");
 	}
 
+	const articleUri = vscode.Uri.joinPath(workspaceUri, "articles");
+
+	if (!fs.existsSync(articleUri.fsPath)) {
+		fs.mkdirSync(articleUri.fsPath);
+		vscode.window.showInformationMessage("created article directory");
+	}
+
 	const context: AppContext = {
 		extension: extensionContext,
-		articlesFolderUri: vscode.Uri.joinPath(workspaceUri, "articles"),
+		articlesFolderUri: articleUri,
 		conf: vscode.workspace.getConfiguration('contentful.general')
 	};
 
