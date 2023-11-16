@@ -80,8 +80,8 @@
       "activitybar": [
         {
           "id": "devio-treeview",
-          "title": "DevIO TreeView",
-          "icon": "$(window)"
+          "title": "DevIO View",
+          "icon": "$(book)"
         }
       ]
     },

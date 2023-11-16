@@ -1,5 +1,8 @@
 ## Introducntion
 
+新DevIOの、Contentful記事管理用VSCode Extensionについて解説します。  
+
+
 ## Settings
 
 settings.jsonに下記情報を追記してください。
@@ -28,54 +31,66 @@ Contentfulの自分のAuthor記事でわかります.
 https://app.contentful.com/spaces/ct0aopd36mqt/entries?id=VqeMNgEC2kOMMmVk&title=Overview&contentTypeId=authorProfile&order.fieldId=updatedAt&order.direction=descending&displayedFieldIds=contentType&displayedFieldIds=updatedAt&displayedFieldIds=author&page=0
 
 
+### Space ID
+
+ct0aopd36mqt  
+を設定してください。
 
 ## Usage
 
-
+適当なワークスペースを開いて、サイドバーのDevIO Viewを開きます。  
 
 ### 記事の作成
-    // ドラフトでエントリーを作成する。
-    // let draftEntry = environment.createEntry('blogPost', {
-    //     fields: {
-    //         title: { 'en-US': 'apiで作成' },
-    //         slug: { 'en-US': 'api-test-test' },
-    //         content: { 'en-US': '## Introduction\napiで作成' },
-    //         language: { 'en-US': 'ja' },
-    //         author: { 'en-US': {
-    //             sys: { type: 'Link', linkType: 'Entry', id: '49IIdXnE4OEYkdApo4KL70' }
-    //           } }
-    //       }
-    // });
 
+下記の方法で新規記事を作成することができます。  
+
+* ARTICLESパネルの右上にある新規作成アイコンをクリック
+* コマンドパレット(Shift + Cmd + P)でDevIO: Create New Articleを実行
 
 ### 記事の取得
+
+既存の記事を取得するには、コマンドパレットを開き、
+DevIO: Get Article from Contentful
+を実行します。
+インプットボックスが開くので、取得したい記事のEntry IDを入力します。  
+
+Entry ID(記事固有のID)は、ブラウザで記事をひらいたとき、  
+URLのentries以降にある文字列です。
+
+```
+https://app.contentful.com/spaces/<Space ID>/entries/<Entry ID>
+```
+
+自分の記事じゃなくてももってこれますし、
+修正も可能なので注意してください。
 
 ### 画像アップロード
 
 現在VSCodeから直接画像をアップロードする方法はありません。
 そのため、コンテキストメニューかコマンドパレットで  
-「DevIO: Open DevIO Contentful Home」
-を選択し、Contentfulの画面で画像をアップロードして
+DevIO: Open DevIO Contentful Home  
+を選択し、Contentfulの画面で画像をアップロードして  
 画像URLを取得してください。  
+
+### 記事情報の更新
+
+記事のタイトル、slugを修正するには、ツリービューで記事を選択して
+ARTICLE INFORMATIONパネルの　Update Articleボタンをクリックします。  
+また、記事本文の更新は対象のMarkdownファイルを保存すると実行されます。  
+
+現在タグの取得/更新は未実装です。（実装予定）
 
 ### 記事の公開
 
+未実装
 
 ## TODO
-
-azure personal access token
-https://dev.azure.com/nakamurashuta/_usersSettings/tokens
-https://code.visualstudio.com/api/working-with-extensions/publishing-extension
-
-rixfv6zhrdnmhwztubkrwe4e5i33x4mbhw2zgybqvsab67hnbldq
-
-articleディレクトリ？
-自分一覧取得？（低）
 
 DONE:記事作成
 プレビュー
 publish
-メタデータ更新？（タグとか）
+タグの取得と更新
+新規作成したときのテンプレート内容を、もう少し役立つものにする
 
 
 ## Known Issues
@@ -87,8 +102,6 @@ Calling out known issues can help limit users opening duplicate issues against y
 ### 0.1
 
 Initial release
-
----
 
 ## Working with Markdown
 
@@ -103,3 +116,5 @@ You can author your README using Visual Studio Code. Here are some useful editor
 * [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
+## Licence
+?
