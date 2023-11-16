@@ -2,6 +2,15 @@
 
 新DevIOの、Contentful記事管理用VSCode Extensionについて解説します。  
 
+## Install
+
+現在は配布されたvsixファイルを手動でインストールします。  
+
+1. Visual Studio Codeを起動
+2. サイドバーの最下部にある四角いアイコン (Extensions) をクリック
+3. 拡張機能ビューが開いたら、右上の ... （More Actions）メニューをクリック
+4. ドロップダウンリストから Install from VSIX... オプションを選択
+5. ファイルダイアログが表示されるので、配布されたvsixファイルを選択
 
 ## Settings
 
