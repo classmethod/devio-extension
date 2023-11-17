@@ -60,4 +60,3 @@ export async function fileExists(uri: vscode.Uri): Promise<boolean> {
 		return false;
 	}
   }
-  

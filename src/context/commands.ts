@@ -4,7 +4,8 @@ import {
   newArticleCommand,
   updateArticleCommand,
   listArticleCommand,
-  pullArticleCommand
+  pullArticleCommand,
+  changeStatusCommand
 } from "../commands/article";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
 import { ContentfulClient } from "../contentful/client";
@@ -31,6 +32,13 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
       "devio-extension.update-article",
       updateArticleCommand(context)
     ),
+
+    // Change Status article
+    vscode.commands.registerCommand(
+      "devio-extension.change-status-article",
+      changeStatusCommand(context)
+    ),
+
     // Open Browser
     vscode.commands.registerCommand(
       "devio-extension.open-browser",

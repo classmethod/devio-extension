@@ -43,15 +43,8 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		...initializeCommands(context, tviewProvider),
 		...initializeTreeView(context, tviewProvider, webViewProvider),
 		...initializeWebView(context, webViewProvider),
-		listeners.initializeMarkdownSaveListener(context)
+		listeners.initializeMarkdownSaveListener(context,webViewProvider)
 	);
-
-	//ボタンを押すとコマンド実行
-	// const button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	// button.command = 'devio-extension.list-article';
-	// button.text = 'XXXXXXXXXXXXXXXX';
-	// //extensionContext.subscriptions.push(button);
-	// button.show();
 }
 
 // This method is called when your extension is deactivated

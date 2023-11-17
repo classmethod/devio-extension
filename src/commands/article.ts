@@ -1,22 +1,27 @@
 import * as vscode from "vscode";
 import * as util from "../util";
-import { ArticleContent } from "../models/article";
+import * as contenfulUtil from "../contentful/contentfulUtil";
+import { ArticleContent, Status } from "../models/article";
 import { AppContext } from "../extension";
 import { ContentfulClient } from "../contentful/client";
+import { Entry } from "contentful-management";
 
 /**
  * Function to create filePath Uri and save the article state
  * @param {AppContext} context - context of the application
  * @param {string} entryId - id of the entry
- * @param {vscode.Uri} uri - uri of the article
- * @param {string} title - title of the article
- * @param {string} content - article content
- * @param {string} slug - article slug
+ * @param {Entry} entry - Entry Object to save
  */
-function saveState(context: AppContext, entryId: string, uri: vscode.Uri, title: string, content: string, slug: string) {
+//function saveState(context: AppContext, entryId: string, uri: vscode.Uri, title: string, content: string, slug: string) {
+function saveState(context: AppContext, entryId: string, entry: Entry) {
   const { articlesFolderUri, extension } = context;
-  let fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
-  let article = new ArticleContent(fileUri, title, content, slug);
+  const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
+  const status = contenfulUtil.getStatus(entry);
+  let article = new ArticleContent(fileUri,
+    entry.fields.title['en-US'],
+    entry.fields.content['en-US'],
+    entry.fields.slug['en-US'],
+    status);
   util.saveState<ArticleContent>(extension, entryId, article);
 }
 
@@ -42,13 +47,12 @@ export const newArticleCommand = (context: AppContext) => {
 
     // Creating entry in Contentful
     const newEntry = await contentfulClient.createNewEntry();
-    let content = newEntry.fields.content['en-US'];
     let fileUri = vscode.Uri.joinPath(articlesFolderUri, `${newEntry.sys.id}.md`);
 
     // Writing the entry content into file and save state
     if (await util.fileExists(fileUri) === false) {
-      await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode(content));
-      saveState(context, newEntry.sys.id, fileUri, newEntry.fields.title['en-US'], content, newEntry.fields.slug['en-US']);
+      await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode(newEntry.fields.content['en-US']));
+      saveState(context, newEntry.sys.id, newEntry);
     }
 
     // Updating Treeview
@@ -73,8 +77,7 @@ export const updateArticleCommand = (context: AppContext, entryId?: any, title?:
 
     entry.update().then(async (updated) => {
       // Updating state
-      let fileUri = vscode.Uri.joinPath(context.articlesFolderUri, `${entryId}.md`);
-      saveState(context, entryId, fileUri, title, updated.fields.content['en-US'], slug);
+      saveState(context, entryId, updated);
 
       // Updating Treeview
       await vscode.commands.executeCommand("devio-extension.refresh-entry");
@@ -103,12 +106,53 @@ export const pullArticleCommand = (context: AppContext) => {
         await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode(entry.fields.content['en-US']));
 
         // Updating state
-        saveState(context, entryId, fileUri, entry.fields.title['en-US'], entry.fields.content['en-US'], entry.fields.slug['en-US']);
+        saveState(context, entryId, entry);
       }
 
       // Updating Treeview
       await vscode.commands.executeCommand("devio-extension.refresh-entry");
       vscode.window.showInformationMessage("記事をpullしました");
     }
+  };
+};
+
+/**
+ * Function to change status(publish/unpublish/archive/unarchive) article entry
+ * @return {function} - a function to change status an article entry
+ */
+export const changeStatusCommand = (context: AppContext, entryId?: any, status?: any) => {
+  return async (entryId?: any, status?: any) => {
+    let contentfulClient = ContentfulClient.getInstance();
+    let beforeEntry = await contentfulClient.getEntry(entryId);
+
+    let updated:Entry;
+    let message:string;
+
+    switch (status) {
+      case 'publish':
+        updated = await beforeEntry.publish();
+        message = "記事を公開しました";
+        break;
+      case 'unpublish':
+        updated = await beforeEntry.unpublish();
+        message = "記事を非公開にしました";
+        break;
+      case 'archive':
+        updated = await beforeEntry.archive();
+        message = "記事をアーカイブしました";
+        break;
+      case 'unarchive':
+        updated = await beforeEntry.unarchive();
+        message = "アーカイブ記事を戻しました";
+        break;
+      default:
+        throw new Error("Unknown status");
+    }
+
+    // Updating state
+    saveState(context, entryId, updated);
+    // Updating Treeview
+    await vscode.commands.executeCommand("devio-extension.refresh-entry");
+    vscode.window.setStatusBarMessage(message, 3000);
   };
 };

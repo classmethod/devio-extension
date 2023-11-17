@@ -3,6 +3,15 @@ import * as util from "../util";
 
 import { AppContext } from "../extension";
 
+/**
+ * Enum for the status of an entry.
+ */
+export enum Status {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+  CHANGED = 'CHANGED',
+}
 
 export class ArticleContent {
   uri: vscode.Uri;
@@ -11,13 +20,15 @@ export class ArticleContent {
   slug: string;
   language: string;
   entryId:string;
+  status:Status;
 
-  constructor(uri: vscode.Uri, title: string, content: string, slug: string, language: string = 'ja') {
+  constructor(uri: vscode.Uri, title: string, content: string, slug: string, status:Status, language: string = 'ja') {
     this.uri = uri;
     this.entryId = util.getEntryIdFromUri(uri);
     this.title = title;
     this.content = content;
     this.slug = slug;
+    this.status = status;
     this.language = language;
   }
 }

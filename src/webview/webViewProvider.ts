@@ -1,17 +1,57 @@
 import * as vscode from "vscode";
 import * as util from "../util";
 import { AppContext } from "../extension";
-import { ArticleContent } from "../models/article";
+import { ArticleContent, Status } from "../models/article";
 
 export class WebViewProvider implements vscode.WebviewViewProvider {
 
     private _view?: vscode.WebviewView;
     private readonly context: AppContext;
-    private readonly message: string;
 
-    constructor(context: AppContext, message: string = "hello!!!") {
+    constructor(context: AppContext) {
         this.context = context;
-        this.message = message;
+    }
+
+    /**
+     * TODO archive/unarchiveは動かないので停止
+     * Statusに応じて実行可能なボタンを返す.
+     * DRAFT時にできるのはUpdate | Publish | Archive.
+     * PUBLISHED時にできるのはUpdate | Unpublish | Archive.
+     * ARCHIVED時にできるのは Unarchive | Publish
+     * CHANGED時(publish後に変更)にできるのは Update | Pulish | Unpublish(DRAFT) | Archive
+     * @param status Article Status
+     * @returns 
+     */
+    private getEnableButtonByStatus(status:Status) {
+        if(status === Status.DRAFT) {
+            return `
+                <button onclick="updateArticle();">Update</button>
+                <button onclick="changeStatusArticle('publish');">Publish</button>
+                <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
+            `;
+        } else if (status === Status.PUBLISHED) {
+            return `
+                <button onclick="updateArticle();">Update</button>
+                <button onclick="changeStatusArticle('unpublish');">UnPublish</button>
+                <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
+            `;
+
+        } else if (status === Status.ARCHIVED){
+            return `
+            <button onclick="changeStatusArticle('publish');">Publish</button>
+            <!-- <button onclick="changeStatusArticle('unarchive');">UnArchive</button> -->
+            `;
+        } else if (status === Status.CHANGED) {
+            return `
+                <button onclick="updateArticle();">Update</button>
+                <button onclick="changeStatusArticle('publish');">Publish</button>
+                <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
+                <!-- <button onclick="changeStatusArticle('unarchive');">UnArchive</button> -->
+            `;
+
+        } else {
+            throw new Error(`Unknown status`);
+        }
     }
 
     private getHtmlForWebview(article?: ArticleContent) {
@@ -28,6 +68,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             </html>
             `;
         } else {
+            const buttonHtml = this.getEnableButtonByStatus(article.status);
             return `
             <!DOCTYPE html>
             <html>
@@ -40,7 +81,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 </style>
                 <script>
                 const vscode = acquireVsCodeApi();
-                function runCommand() {
+                function updateArticle() {
                     const entryId = document.getElementById('entryId').value;
                     const title = document.getElementById('title').value;
                     const slug = document.getElementById('slug').value;
@@ -54,9 +95,20 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                         language: language
                     });
                 }
+
+                function changeStatusArticle(status) {
+                    const entryId = document.getElementById('entryId').value;
+                    vscode.postMessage({
+                        command: 'changeStatusArticle',
+                        entryId : entryId,
+                        status: status
+                    });
+
+                }
                 </script>
             </head>
             <body>
+                <label for="status">Status:&nbsp;${article.status}</label><br>
                 <label for="title">Title:</label><br>
                 <input type="text" id="title" name="title" value="${article.title}"><br>
                 <label for="slug">Slug:</label><br>
@@ -64,7 +116,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <label for="language">Language:</label><br>
                 <input type="text" id="language" name="language" value="${article.language}"><br>
                 <input type="hidden" id="entryId" name="entryId" value="${article.entryId}">
-                <button onclick="runCommand();">Update Article</button>
+                ${buttonHtml}
                 <br>
                 ※記事本文はファイルを保存した時点で反映されます
             </body>
@@ -84,7 +136,18 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             message => {
                 switch (message.command) {
                     case 'updateArticle': // HTML側でpostMessageに指定したコマンド
-                        vscode.commands.executeCommand('devio-extension.update-article', message.entryId,message.title, message.slug, message.language);
+                        vscode.commands.executeCommand('devio-extension.update-article',
+                            message.entryId, message.title, message.slug, message.language).then(() => {
+                                //update view
+                                this.updateContent(message.entryId);
+                            });
+                        break;
+                    case 'changeStatusArticle':
+                        vscode.commands.executeCommand('devio-extension.change-status-article',
+                            message.entryId, message.status).then(() => {
+                                //update view
+                                this.updateContent(message.entryId);
+                            });
                         break;
                 }
             },
