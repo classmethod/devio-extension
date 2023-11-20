@@ -5,7 +5,8 @@ import {
   updateArticleCommand,
   listArticleCommand,
   pullArticleCommand,
-  changeStatusCommand
+  changeStatusCommand,
+  previewCommand
 } from "../commands/article";
 import { storeTagCommand } from "../commands/tag";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
@@ -45,7 +46,7 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
       "devio-extension.store-tags",
       storeTagCommand(context)
     ),
-    // Open Browser
+    // Open Browser for 
     vscode.commands.registerCommand(
       "devio-extension.open-browser",
       () => {
@@ -53,6 +54,12 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
         const url = vscode.Uri.parse(`https://app.contentful.com/spaces/${spaceId}/home`);
         vscode.env.openExternal(url);
       }),
+    // Preview(Open Contentful Entry View)
+    vscode.commands.registerCommand(
+      "devio-extension.preview",
+      previewCommand(context)
+    ),
+
     // Refresh Treeview
     vscode.commands.registerCommand('devio-extension.refresh-entry',
       () => tviewProvider.refresh())];

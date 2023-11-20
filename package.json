@@ -32,7 +32,11 @@
       {
         "command": "devio-extension.open-browser",
         "title": "DevIO: Open DevIO Contentful Home"
-      },      
+      },
+      {
+        "command": "devio-extension.preview",
+        "title": "DevIO: Preview Active Editors Entry"
+      },
       {
         "command": "devio-extension.refresh-entry",
         "title": "Refresh",
@@ -57,8 +61,9 @@
       ],
       "editor/context": [
         {
-            "command": "devio-extension.open-browser",
-            "group": "navigation"
+          "command": "devio-extension.preview",
+          "group": "navigation",
+          "when": "editorLangId == markdown"
         }
       ]
     },

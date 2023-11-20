@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from 'path';
 import * as util from "../util";
 import * as tag from "../models/tag";
 import * as contenfulUtil from "../contentful/contentfulUtil";
@@ -155,5 +156,24 @@ export const changeStatusCommand = (context: AppContext, entryId?: any, status?:
     // Updating Treeview
     await vscode.commands.executeCommand("devio-extension.refresh-entry");
     vscode.window.setStatusBarMessage(message, 3000);
+  };
+};
+
+/**
+ * Function to preview entry(open contentful entry)
+ * @return {function} - a function to preview 
+ */
+export const previewCommand = (context: AppContext) => {
+  return async () => {
+    //get active editor
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const entryId = path.basename(editor.document.fileName).replace(/\.md$/, "");
+      const previewUrl = contenfulUtil.getEntryDetailUrl(entryId);
+      const url = vscode.Uri.parse(previewUrl);
+      vscode.env.openExternal(url);
+    } else {
+      vscode.window.showInformationMessage('No active editor!');
+    }
   };
 };

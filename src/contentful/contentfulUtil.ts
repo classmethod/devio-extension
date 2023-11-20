@@ -1,5 +1,17 @@
 import * as contentful from 'contentful-management';
+import { ContentfulClient } from "../contentful/client";
 import { Status } from '../models/article';
+
+
+/**
+ * 記事詳細画面URLを返す.
+ * @param entryId  Entry ID
+ * @returns Entry Detail URL
+ */
+export function getEntryDetailUrl(entryId: string): string {
+    const spaceId = ContentfulClient.getInstance().getSpaceId();
+    return `https://app.contentful.com/spaces/${spaceId}/entries/${entryId}`;
+}
 
 /**
  * Get the current status of the given entry.

@@ -48,6 +48,7 @@ ct0aopd36mqt
 ## Usage
 
 適当なワークスペースを開いて、サイドバーのDevIO Viewを開きます。  
+作成/pullした記事はワークスペース直下のarticlesディレクトリに作成されます。  
 
 ### 記事の作成
 
@@ -73,13 +74,15 @@ https://app.contentful.com/spaces/<Space ID>/entries/<Entry ID>
 自分の記事じゃなくてももってこれますし、
 修正も可能なので注意してください。
 
-### 画像アップロード
+### 画像アップロード・プレビュー
 
-現在VSCodeから直接画像をアップロードする方法はありません。
+現在VSCodeから
+* 直接画像をアップロードする方法
+* 記事のプレビューを作成する方法
+はありません。　　
 そのため、コンテキストメニューかコマンドパレットで  
-DevIO: Open DevIO Contentful Home  
-を選択し、Contentfulの画面で画像をアップロードして  
-画像URLを取得してください。  
+DevIO: Preview Active Editors Entry　　
+を選択し、Contentfulの画面で処理を実施してください。  
 
 ### 記事情報の更新
 
@@ -87,18 +90,20 @@ DevIO: Open DevIO Contentful Home
 ARTICLE INFORMATIONパネルの　Update Articleボタンをクリックします。  
 また、記事本文の更新は対象のMarkdownファイルを保存すると実行されます。  
 
-現在タグの取得/更新は未実装です。（実装予定）
+タグについては取得のみ実装しています。  
 
-### 記事の公開
+### 記事の公開・非公開
 
-未実装
+ARTICLE INFORMATIONパネルの  
+PUBLISH/UNPUBLISHボタンで行うことが可能です。  
 
 ## TODO
 
 DONE:記事作成
-プレビュー
-publish
-タグの取得と更新
+DONE:プレビュー
+DONE:publish
+DONE:タグの取得
+タグの更新
 新規作成したときのテンプレート内容を、もう少し役立つものにする
 
 
