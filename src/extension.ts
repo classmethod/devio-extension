@@ -9,6 +9,14 @@ import { WebViewProvider } from "./webview/webViewProvider";
 import { ArticlesTreeViewProvider } from "./treeview/articlesTreeViewProvider";
 import * as util from "./util";
 
+/**
+ * Initialize extension.
+ */
+async function initialize() {
+	//最新のタグ一覧を取得
+	await vscode.commands.executeCommand("devio-extension.store-tags");
+}
+
 /** 拡張内の共通の情報をまとめたオブジェクト */
 export interface AppContext {
 	extension: vscode.ExtensionContext
@@ -43,8 +51,15 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		...initializeCommands(context, tviewProvider),
 		...initializeTreeView(context, tviewProvider, webViewProvider),
 		...initializeWebView(context, webViewProvider),
-		listeners.initializeMarkdownSaveListener(context,webViewProvider)
+		listeners.initializeMarkdownSaveListener(context, webViewProvider)
 	);
+
+	initialize().then(async () => {
+		vscode.window.showInformationMessage("extension initialized");
+	},(reason:any) => {
+		console.error(reason);
+		vscode.window.showErrorMessage("extension initialized Error");
+	});
 }
 
 // This method is called when your extension is deactivated

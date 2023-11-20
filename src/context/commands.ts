@@ -7,6 +7,7 @@ import {
   pullArticleCommand,
   changeStatusCommand
 } from "../commands/article";
+import { storeTagCommand } from "../commands/tag";
 import { ArticlesTreeViewProvider } from "../treeview/articlesTreeViewProvider";
 import { ContentfulClient } from "../contentful/client";
 
@@ -39,6 +40,11 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
       changeStatusCommand(context)
     ),
 
+    // Get&Store Latest Tags
+    vscode.commands.registerCommand(
+      "devio-extension.store-tags",
+      storeTagCommand(context)
+    ),
     // Open Browser
     vscode.commands.registerCommand(
       "devio-extension.open-browser",

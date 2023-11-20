@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as util from "../util";
+import { Tag } from "../models/tag";
 import { AppContext } from "../extension";
 import { ArticleContent, Status } from "../models/article";
 
@@ -22,8 +23,8 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
      * @param status Article Status
      * @returns 
      */
-    private getEnableButtonByStatus(status:Status) {
-        if(status === Status.DRAFT) {
+    private getEnableButtonByStatus(status: Status) {
+        if (status === Status.DRAFT) {
             return `
                 <button onclick="updateArticle();">Update</button>
                 <button onclick="changeStatusArticle('publish');">Publish</button>
@@ -36,7 +37,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
             `;
 
-        } else if (status === Status.ARCHIVED){
+        } else if (status === Status.ARCHIVED) {
             return `
             <button onclick="changeStatusArticle('publish');">Publish</button>
             <!-- <button onclick="changeStatusArticle('unarchive');">UnArchive</button> -->
@@ -51,6 +52,21 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
 
         } else {
             throw new Error(`Unknown status`);
+        }
+    }
+
+    /**
+     * Viewに表示するタグ名文字列を返す
+     * @param tags Tag[]
+     * @returns タグ名の,区切り文字列
+     */
+    private getTagNames(tags: Tag[]): string {
+        let prefix = "【";
+        let suffix = "】";
+        if (!tags || tags.length === 0) {
+            return "";
+        } else {
+            return tags.map(tag => `${prefix}${tag.name}${suffix}`).join(',');
         }
     }
 
@@ -111,6 +127,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <label for="status">Status:&nbsp;${article.status}</label><br>
                 <label for="title">Title:</label><br>
                 <input type="text" id="title" name="title" value="${article.title}"><br>
+                <label for="tags">Tags:${this.getTagNames(article.tags)}</label><br>
                 <label for="slug">Slug:</label><br>
                 <input type="text" id="slug" name="slug" value="${article.slug}"><br>
                 <label for="language">Language:</label><br>

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as util from "../util";
+import * as tag from "../models/tag";
 import * as contenfulUtil from "../contentful/contentfulUtil";
 import { ArticleContent, Status } from "../models/article";
 import { AppContext } from "../extension";
@@ -12,13 +13,14 @@ import { Entry } from "contentful-management";
  * @param {string} entryId - id of the entry
  * @param {Entry} entry - Entry Object to save
  */
-//function saveState(context: AppContext, entryId: string, uri: vscode.Uri, title: string, content: string, slug: string) {
 function saveState(context: AppContext, entryId: string, entry: Entry) {
   const { articlesFolderUri, extension } = context;
   const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
   const status = contenfulUtil.getStatus(entry);
+  const tags: tag.Tag[] = tag.getTagsByIdArray(entry.fields.tags?.["en-US"]);
   let article = new ArticleContent(fileUri,
     entry.fields.title['en-US'],
+    tags,
     entry.fields.content['en-US'],
     entry.fields.slug['en-US'],
     status);
@@ -78,7 +80,6 @@ export const updateArticleCommand = (context: AppContext, entryId?: any, title?:
     entry.update().then(async (updated) => {
       // Updating state
       saveState(context, entryId, updated);
-
       // Updating Treeview
       await vscode.commands.executeCommand("devio-extension.refresh-entry");
       vscode.window.setStatusBarMessage("記事を保存しました", 3000);
@@ -125,8 +126,8 @@ export const changeStatusCommand = (context: AppContext, entryId?: any, status?:
     let contentfulClient = ContentfulClient.getInstance();
     let beforeEntry = await contentfulClient.getEntry(entryId);
 
-    let updated:Entry;
-    let message:string;
+    let updated: Entry;
+    let message: string;
 
     switch (status) {
       case 'publish':

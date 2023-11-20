@@ -4,6 +4,7 @@ import * as contenfulUtil from "../contentful/contentfulUtil";
 import { AppContext } from '../extension';
 import { ContentfulClient } from "../contentful/client";
 import { ArticleContent } from "../models/article";
+import * as tag from "../models/tag";
 import { WebViewProvider } from "../webview/webViewProvider";
 
 // diff表示用チャンネル
@@ -62,11 +63,13 @@ export function initializeMarkdownSaveListener(context: AppContext, webvProvider
                 //state update
                 const articlesFolderUri = context.articlesFolderUri;
                 const title = entry.fields.title['en-US'];
+                //[id,...]形式からTag[]形式に変換
+                const tags: tag.Tag[] = tag.getTagsByIdArray(entry.fields.tags?.["en-US"]);
                 const content = entry.fields.content['en-US'];
                 const status = contenfulUtil.getStatus(updated);
                 const slug = entry.fields.slug['en-US'];
                 const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
-                const article = new ArticleContent(fileUri, title, content, slug, status);
+                const article = new ArticleContent(fileUri, title, tags, content, slug, status);
                 util.saveState<ArticleContent>(context.extension, entryId, article);
                 webvProvider.updateContent(entryId);
                 vscode.window.setStatusBarMessage("記事を保存しました", 3000);
