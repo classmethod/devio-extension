@@ -7,36 +7,38 @@ import * as listeners from "./context/listeners";
 
 import { WebViewProvider } from "./webview/webViewProvider";
 import { ArticlesTreeViewProvider } from "./treeview/articlesTreeViewProvider";
-import * as util from "./util";
 
 /**
- * Initialize extension.
+ * Initialize the extension.
  */
 async function initialize() {
-	//最新のタグ一覧を取得
+	// Fetch the latest list of tags
 	await vscode.commands.executeCommand("devio-extension.store-tags");
 }
 
-/** 拡張内の共通の情報をまとめたオブジェクト */
+/** 
+ * Object consolidating communally 
+ * information within an extension 
+ */
 export interface AppContext {
 	extension: vscode.ExtensionContext
 	articlesFolderUri: vscode.Uri;
 	conf: vscode.WorkspaceConfiguration
 }
 
-// 拡張がアクティベートされる時に実行される関数
+// Function that runs when the extension is activated
 export function activate(extensionContext: vscode.ExtensionContext) {
 	const workspaceUri = vscode.workspace.workspaceFolders?.[0].uri;
 
 	if (!workspaceUri) {
-		return vscode.window.showErrorMessage("ワークスペースがありません");
+		return vscode.window.showErrorMessage("No workspace found");
 	}
 
 	const articleUri = vscode.Uri.joinPath(workspaceUri, "articles");
 
 	if (!fs.existsSync(articleUri.fsPath)) {
 		fs.mkdirSync(articleUri.fsPath);
-		vscode.window.showInformationMessage("created article directory");
+		vscode.window.showInformationMessage("Article directory created");
 	}
 
 	const context: AppContext = {
@@ -55,10 +57,10 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 	);
 
 	initialize().then(async () => {
-		vscode.window.showInformationMessage("extension initialized");
-	},(reason:any) => {
+		vscode.window.showInformationMessage("Extension initialized");
+	}, (reason: any) => {
 		console.error(reason);
-		vscode.window.showErrorMessage("extension initialized Error");
+		vscode.window.showErrorMessage("Error initializing extension");
 	});
 }
 

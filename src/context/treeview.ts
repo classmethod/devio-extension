@@ -12,7 +12,7 @@ export const initializeTreeView = (context: AppContext, tvProvider: ArticlesTree
   });
 
   treeView.onDidChangeSelection((event) => {
-    const selectedItem = event.selection[0]; // 選択されたアイテム
+    const selectedItem = event.selection[0];
     if(selectedItem.resourceUri !== undefined) {
       const entryId = util.getEntryIdFromUri(selectedItem.resourceUri);
       webvProvider.updateContent(entryId);

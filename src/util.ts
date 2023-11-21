@@ -35,7 +35,7 @@ export function getEntryIdFromUri(uri: vscode.Uri): string {
 }
 
 /**
- * diff-match-patchをつかって２つのtextを比較する.
+ * Compare two texts using diff-match-patch.
  * @param text1 
  * @param text2 
  */

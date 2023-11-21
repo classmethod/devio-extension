@@ -3,7 +3,7 @@ import { AppContext } from "../extension";
 import { WebViewProvider } from "../webview/webViewProvider";
 
 export const initializeWebView = (context: AppContext, webViewProvider: WebViewProvider): vscode.Disposable[] => {
-  // WebView を登録
+  // Entry WebView
   context.extension.subscriptions.push(
     vscode.window.registerWebviewViewProvider("devio-webview", webViewProvider));
 

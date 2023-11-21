@@ -7,9 +7,9 @@ import { ArticleContent } from "../models/article";
 import * as tag from "../models/tag";
 import { WebViewProvider } from "../webview/webViewProvider";
 
-// diff表示用チャンネル
+// diff channel
 let channel = vscode.window.createOutputChannel("Diff Output");
-// diff表示するかどうかのフラグ
+// Flag whether to display diffs or not.
 const isDiff: boolean = vscode.workspace.getConfiguration('contentful.general').get('diff') ?? false;
 
 /**
@@ -38,7 +38,7 @@ function diff(entryId: string, text1: string, text2: string) {
 }
 
 /**
- * Markdownファイルを保存されるたびに実行されるlisneter
+ * lisneter executed each time a Markdown file is saved.
  * @param context AppContext
  * @param webvProvider  WebViewProvider
  * @returns Disposable

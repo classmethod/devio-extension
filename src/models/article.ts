@@ -36,18 +36,17 @@ export class ArticleContent {
   }
 }
 
-/** 記事のエラーを扱うクラス */
+/** Article Error Class */
 export class ArticleContentError extends Error {
   static isError(value: unknown): value is ArticleContentError {
     return value instanceof ArticleContentError;
   }
 }
 
-/** 取得処理の結果型 */
 export type ArticleContentLoadResult = ArticleContent | ArticleContentError;
 
 
-/** 記事情報を取得する */
+/** Get Article info */
 export async function loadArticleContent(
   context: AppContext,
   uri: vscode.Uri
@@ -65,7 +64,7 @@ export async function loadArticleContent(
   }
 }
 
-/** 記事の一覧を返す */
+/** Get Articles List */
 export async function getArticleContents(
   context: AppContext
 ): Promise<ArticleContentLoadResult[]> {

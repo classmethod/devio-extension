@@ -71,7 +71,7 @@ export function getTagById(id: number): Tag | undefined {
 }
 
 /**
- * Contentfulから取得したtagsをTag[]にtranslateする.
+ * Translate tags retrieved from Contentful to Tag[].
  * @param tags tag array
  * @returns Tag[]
  */

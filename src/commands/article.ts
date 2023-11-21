@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as util from "../util";
 import * as tag from "../models/tag";
 import * as contenfulUtil from "../contentful/contentfulUtil";
-import { ArticleContent, Status } from "../models/article";
+import { ArticleContent } from "../models/article";
 import { AppContext } from "../extension";
 import { ContentfulClient } from "../contentful/client";
 import { Entry } from "contentful-management";
@@ -89,7 +89,7 @@ export const updateArticleCommand = (context: AppContext, entryId?: any, title?:
 };
 
 /**
- * Function to pull existing article entry
+ * Function to pull existing article entry from Contentful
  * @return {function} - a function to pull an article entry
  */
 export const pullArticleCommand = (context: AppContext) => {
@@ -119,7 +119,7 @@ export const pullArticleCommand = (context: AppContext) => {
 };
 
 /**
- * Function to change status(publish/unpublish/archive/unarchive) article entry
+ * Function to change status(publish/unpublish) article entry
  * @return {function} - a function to change status an article entry
  */
 export const changeStatusCommand = (context: AppContext, entryId?: any, status?: any) => {
@@ -160,7 +160,7 @@ export const changeStatusCommand = (context: AppContext, entryId?: any, status?:
 };
 
 /**
- * Function to preview entry(open contentful entry)
+ * Function to preview entry(open contentful via browser)
  * @return {function} - a function to preview 
  */
 export const previewCommand = (context: AppContext) => {

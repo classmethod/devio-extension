@@ -3,8 +3,12 @@ import { ContentfulClient } from "../contentful/client";
 import { Status } from '../models/article';
 
 
+// Tag一覧のEntryID
+export const TAG_ENTRY_ID = "5LNylR3zpQQOnuddI4zoWx";
+
+
 /**
- * 記事詳細画面URLを返す.
+ * Get the Article Detail URL.
  * @param entryId  Entry ID
  * @returns Entry Detail URL
  */

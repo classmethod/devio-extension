@@ -1,10 +1,8 @@
 import * as tag from "../models/tag";
+import * as cUtil from "../contentful/contentfulUtil";
 import { AppContext } from "../extension";
 import { ContentfulClient } from "../contentful/client";
 
-
-// Tag一覧のEntryID
-const TAG_ENTRY_ID = "5LNylR3zpQQOnuddI4zoWx";
 
 /**
  * Function to Get&Store Tag Entry
@@ -14,7 +12,7 @@ export const storeTagCommand = (context: AppContext) => {
   return async () => {
     // Get entry for tag from Contentful 
     let contentfulClient = ContentfulClient.getInstance();
-    let tag_entry = await contentfulClient.getEntry(TAG_ENTRY_ID);
+    let tag_entry = await contentfulClient.getEntry(cUtil.TAG_ENTRY_ID);
     tag.initializeData(tag_entry.fields.tags?.["en-US"]);
   };
 };

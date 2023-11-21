@@ -1,6 +1,9 @@
 import * as vscode from "vscode";
 import * as contentful from "contentful-management";
 
+/**
+ * ContentfulClient is a singleton class that manages the Contentful API client.
+ */
 export class ContentfulClient {
     private static ins: ContentfulClient;
     private token: string;
@@ -9,6 +12,10 @@ export class ContentfulClient {
     private apiClient: contentful.ClientAPI;
     private contentTypeId: string = "blogPost";
 
+    /**
+     * Initialize the Contentful client, which is then used for all future Contentful API requests.
+     * Configuration parameters are retrieved from the workspace configuration.
+     */
     private constructor() {
         const confGeneral = vscode.workspace.getConfiguration('contentful.general');
 
@@ -29,6 +36,10 @@ export class ContentfulClient {
         });
     }
 
+    /**
+     * Get the instance of the ContentfulClient class.
+     * @returns An instance of ContentfulClient.
+     */
     public static getInstance(): ContentfulClient {
         if (!ContentfulClient.ins) {
             ContentfulClient.ins = new ContentfulClient();
@@ -37,22 +48,34 @@ export class ContentfulClient {
         return ContentfulClient.ins;
     }
 
+    /**
+     * Get the API client.
+     * @returns The API client.
+     */
     public getApiClient(): contentful.ClientAPI {
         return this.apiClient;
     }
 
+    /**
+     * Get the Space ID.
+     * @returns The Space ID.
+     */
     public getSpaceId(): string {
         return this.spaceId;
     }
 
+    /**
+     * Get the Entry ID.
+     * @returns The Entry ID.
+     */
     public getEntryId(): string {
         return this.entryId;
     }
 
     /**
-     * EntryIDを指定してContentfulからEntryを取得する.
-     * @param entryId Entry ID
-     * @returns Contentful Entry
+     * Fetch an Entry from Contentful based on a provided Entry ID.
+     * @param entryId The ID of the Entry to get.
+     * @returns The corresponding Contentful Entry.
      */
     public async getEntry(entryId: string): Promise<contentful.Entry> {
         let space = await this.apiClient.getSpace(this.spaceId);
@@ -61,9 +84,8 @@ export class ContentfulClient {
     }
 
     /**
-     * 新しいEntry(draft)を作成する.
-     * @param entryId Entry ID
-     * @returns Contentful Entity
+     * Create a new Entry (as a draft) in Contentful.
+     * @returns The new Contentful Entry.
      */
     public async createNewEntry(): Promise<contentful.Entry> {
         let space = await this.apiClient.getSpace(this.spaceId);
@@ -74,11 +96,12 @@ export class ContentfulClient {
                 slug: { 'en-US': 'unknown-slug' },
                 content: { 'en-US': 'new article' },
                 language: { 'en-US': 'ja' },
-                author: { 'en-US': {
-                    sys: { type: 'Link', linkType: 'Entry', id: `${this.entryId}` }
-                } }
+                author: {
+                    'en-US': {
+                        sys: { type: 'Link', linkType: 'Entry', id: `${this.entryId}` }
+                    }
+                }
             }
         });
     }
-
 }

@@ -14,16 +14,16 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
     }
 
     /**
-     * TODO archive/unarchiveは動かないので停止
-     * Statusに応じて実行可能なボタンを返す.
-     * DRAFT時にできるのはUpdate | Publish | Archive.
-     * PUBLISHED時にできるのはUpdate | Unpublish | Archive.
-     * ARCHIVED時にできるのは Unarchive | Publish
-     * CHANGED時(publish後に変更)にできるのは Update | Pulish | Unpublish(DRAFT) | Archive
+     * TODO archive/unarchive does not work, so stop.
+     * Returns executable buttons depending on Status.
+     * When DRAFTed you can: Update | Publish | Archive.
+     * When PUBLISHED you can only Update | Unpublish | Archive.
+     * When ARCHIVED (Unarchive | Publish).
+     * When CHANGED (changes after publish) can be: Update | Pulish | Unpublish(DRAFT) | Archive
      * @param status Article Status
-     * @returns 
+     * @returns html string
      */
-    private getEnableButtonByStatus(status: Status) {
+    private getEnableButtonByStatus(status: Status): string {
         if (status === Status.DRAFT) {
             return `
                 <button onclick="updateArticle();">Update</button>
@@ -56,7 +56,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
     }
 
     /**
-     * Viewに表示するタグ名文字列を返す
+     * Returns the tag name string to be displayed in the View.
      * @param tags Tag[]
      * @returns タグ名の,区切り文字列
      */
@@ -175,7 +175,8 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
     }
 
     /**
-     * EntryIDをキーにstateに保存された情報でWebViewをupdateする.
+     * Update the WebView with the information stored   
+     * in the state using the EntryID as key.
      * @param entryId Entry ID
      */
     public updateContent(entryId: string) {
