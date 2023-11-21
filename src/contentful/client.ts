@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as contentful from "contentful-management";
+import * as util from "../util";
 
 /**
  * ContentfulClient is a singleton class that manages the Contentful API client.
@@ -90,11 +91,12 @@ export class ContentfulClient {
     public async createNewEntry(): Promise<contentful.Entry> {
         let space = await this.apiClient.getSpace(this.spaceId);
         let env = await space.getEnvironment('master');
+        const defaultTitle = util.generateRandomString(12);
         return env.createEntry(this.contentTypeId, {
             fields: {
-                title: { 'en-US': 'untitled' },
-                slug: { 'en-US': 'unknown-slug' },
-                content: { 'en-US': 'new article' },
+                title: { 'en-US': `untitled-${defaultTitle}` },
+                slug: { 'en-US': `slug-${defaultTitle}` },
+                content: { 'en-US': `new article - ${defaultTitle}` },
                 language: { 'en-US': 'ja' },
                 author: {
                     'en-US': {

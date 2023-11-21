@@ -60,3 +60,26 @@ export async function fileExists(uri: vscode.Uri): Promise<boolean> {
 		return false;
 	}
   }
+
+/**
+ * Generate a random string of the specified length.
+ *
+ * @param length - The desired length of the output string.
+ * @return A string of the specified length composed of randomly chosen alphanumeric characters.
+ */
+export function generateRandomString(length: number): string {
+    // Initialize result string.
+    let result = '';
+    // Define the characters that can be used in the output string.
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const charactersLength = characters.length;
+
+    // Repeat for the specified number of iterations.
+    for (let i = 0; i < length; i++) {
+        // Append a randomly chosen character from the character string to the result string.
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    // Return the resulting random string.
+    return result;
+}
