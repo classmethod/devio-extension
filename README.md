@@ -21,7 +21,7 @@ settings.jsonに下記情報を追記してください。
 "contentful.general": {
     "accessToken": "<Your Accecc Token>",
     "spaceId": "<Your Space ID>",
-    "entryId": "<Your Entry ID>",
+    "authorId": "<Your Author ID>",
     "diff": true | false
 }
 ```
@@ -33,12 +33,10 @@ Contentfulダッシュボードにアクセスして、
 でトークンを生成できます。
 
 
-### Entry ID
-entryIdは、
-Contentfulの自分のAuthor記事でわかります.  
-ここから自分の記事へ移動して確認してください。
-https://app.contentful.com/spaces/ct0aopd36mqt/entries?id=VqeMNgEC2kOMMmVk&title=Overview&contentTypeId=authorProfile&order.fieldId=updatedAt&order.direction=descending&displayedFieldIds=contentType&displayedFieldIds=updatedAt&displayedFieldIds=author&page=0
-
+### Author ID
+authorIdは、自分のIDです。
+[Home画面](https://app.contentful.com/spaces/ct0aopd36mqt/home)の
+Userセクションで確認できます。
 
 ### Space ID
 

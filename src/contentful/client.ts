@@ -9,7 +9,7 @@ export class ContentfulClient {
     private static ins: ContentfulClient;
     private token: string;
     private spaceId: string;
-    private entryId: string;
+    private authorId: string;
     private apiClient: contentful.ClientAPI;
     private contentTypeId: string = "blogPost";
 
@@ -22,14 +22,14 @@ export class ContentfulClient {
 
         const token: string = confGeneral.get('accessToken') ?? '';
         const spaceId: string = confGeneral.get('spaceId') ?? '';
-        const entryId: string = confGeneral.get('entryId') ?? '';
+        const authorId: string = confGeneral.get('authorId') ?? '';
 
         if (token === '' || spaceId === '') {
             throw new Error(`token : ${token}, spaceId : ${spaceId}`);
         } else {
             this.token = token;
             this.spaceId = spaceId;
-            this.entryId = entryId;
+            this.authorId = authorId;
         }
 
         this.apiClient = contentful.createClient({
@@ -66,11 +66,11 @@ export class ContentfulClient {
     }
 
     /**
-     * Get the Entry ID.
-     * @returns The Entry ID.
+     * Get the Author ID.
+     * @returns The Author ID.
      */
-    public getEntryId(): string {
-        return this.entryId;
+    public getAuthorId(): string {
+        return this.authorId;
     }
 
     /**
@@ -100,7 +100,7 @@ export class ContentfulClient {
                 language: { 'en-US': 'ja' },
                 author: {
                     'en-US': {
-                        sys: { type: 'Link', linkType: 'Entry', id: `${this.entryId}` }
+                        sys: { type: 'Link', linkType: 'Entry', id: `${this.authorId}` }
                     }
                 }
             }
