@@ -22,7 +22,7 @@ function saveState(context: AppContext, entryId: string, entry: Entry) {
   let article = new ArticleContent(fileUri,
     entry.fields.title['en-US'],
     tags,
-    entry.fields.content['en-US'],
+    entry.fields.content?.['en-US'] || 'hello',
     entry.fields.slug['en-US'],
     status);
   util.saveState<ArticleContent>(extension, entryId, article);
@@ -103,6 +103,9 @@ export const pullArticleCommand = (context: AppContext) => {
       let contentfulClient = ContentfulClient.getInstance();
       let entry = await contentfulClient.getEntry(entryId);
       let fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
+
+      //Processing in the absence of content
+      entry.fields.content ??= { 'en-US': "initia content" };
 
       if (await util.fileExists(fileUri) === false) {
         await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode(entry.fields.content['en-US']));

@@ -54,7 +54,10 @@ export function initializeMarkdownSaveListener(context: AppContext, webvProvider
             //保存されたmarkdown取得
             const text = document.getText();
 
-            //テキストの差分表示
+            //Processing in the absence of content
+            entry.fields.content ??= { 'en-US': "" };
+
+            //text diff
             diff(entryId, entry.fields.content['en-US'], text);
 
             //entry update
@@ -62,12 +65,12 @@ export function initializeMarkdownSaveListener(context: AppContext, webvProvider
             entry.update().then((updated) => {
                 //state update
                 const articlesFolderUri = context.articlesFolderUri;
-                const title = entry.fields.title['en-US'];
-                //[id,...]形式からTag[]形式に変換
-                const tags: tag.Tag[] = tag.getTagsByIdArray(entry.fields.tags?.["en-US"]);
-                const content = entry.fields.content['en-US'];
+                const title = updated.fields.title['en-US'];
+                //translate [id,...] to Tag[]
+                const tags: tag.Tag[] = tag.getTagsByIdArray(updated.fields.tags?.["en-US"]);
+                const content = updated.fields.content['en-US'];
                 const status = contenfulUtil.getStatus(updated);
-                const slug = entry.fields.slug['en-US'];
+                const slug = updated.fields.slug['en-US'];
                 const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
                 const article = new ArticleContent(fileUri, title, tags, content, slug, status);
                 util.saveState<ArticleContent>(context.extension, entryId, article);
