@@ -27,25 +27,25 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
         if (status === Status.DRAFT) {
             return `
                 <button onclick="updateArticle();">Update</button>
-                <button onclick="changeStatusArticle('publish');">Publish</button>
+                <button onclick="changeStatusArticle('publish');">記事を公開</button>
                 <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
             `;
         } else if (status === Status.PUBLISHED) {
             return `
                 <button onclick="updateArticle();">Update</button>
-                <button onclick="changeStatusArticle('unpublish');">UnPublish</button>
+                <button onclick="changeStatusArticle('unpublish');">記事を非公開</button>
                 <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
             `;
 
         } else if (status === Status.ARCHIVED) {
             return `
-            <button onclick="changeStatusArticle('publish');">Publish</button>
+            <button onclick="changeStatusArticle('publish');">記事を公開</button>
             <!-- <button onclick="changeStatusArticle('unarchive');">UnArchive</button> -->
             `;
         } else if (status === Status.CHANGED) {
             return `
                 <button onclick="updateArticle();">Update</button>
-                <button onclick="changeStatusArticle('publish');">Publish</button>
+                <button onclick="changeStatusArticle('publish');">記事を公開</button>
                 <!-- <button onclick="changeStatusArticle('archive');">Archive</button> -->
                 <!-- <button onclick="changeStatusArticle('unarchive');">UnArchive</button> -->
             `;

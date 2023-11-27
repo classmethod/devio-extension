@@ -93,7 +93,7 @@ ARTICLE INFORMATIONパネルの　Update Articleボタンをクリックしま�
 ### 記事の公開・非公開
 
 ARTICLE INFORMATIONパネルの  
-PUBLISH/UNPUBLISHボタンで行うことが可能です。  
+記事を公開/記事を非公開ボタンで行うことが可能です。  
 
 ## TODO
 
