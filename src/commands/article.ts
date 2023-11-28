@@ -24,8 +24,8 @@ function saveState(context: AppContext, entryId: string, entry: Entry) {
     tags,
     entry.fields.content?.['en-US'] || 'hello',
     entry.fields.slug['en-US'],
+    entry.fields.language['en-US'],
     status,
-    entry.fields.language['en-US']
   );
   util.saveState<ArticleContent>(extension, entryId, article);
 }

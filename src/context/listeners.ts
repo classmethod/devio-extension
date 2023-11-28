@@ -73,7 +73,7 @@ export function initializeMarkdownSaveListener(context: AppContext, webvProvider
                 const slug = updated.fields.slug['en-US'];
                 const language = updated.fields.language['en-US'];
                 const fileUri = vscode.Uri.joinPath(articlesFolderUri, `${entryId}.md`);
-                const article = new ArticleContent(fileUri, title, tags, content, slug, status, language);
+                const article = new ArticleContent(fileUri, title, tags, content, slug, language, status);
                 util.saveState<ArticleContent>(context.extension, entryId, article);
                 webvProvider.updateContent(entryId);
                 vscode.window.setStatusBarMessage("記事を保存しました", 3000);

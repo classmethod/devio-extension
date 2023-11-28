@@ -17,22 +17,22 @@ export enum Status {
 export class ArticleContent {
   uri: vscode.Uri;
   title: string;
-  tags:tag.Tag[];
+  tags: tag.Tag[];
   content: string;
   slug: string;
   language: string;
-  entryId:string;
-  status:Status;
+  entryId: string;
+  status: Status;
 
-  constructor(uri: vscode.Uri, title: string, tags: tag.Tag[], content: string, slug: string, status:Status, language: string = 'ja') {
+  constructor(uri: vscode.Uri, title: string, tags: tag.Tag[], content: string, slug: string, language: string, status: Status) {
     this.uri = uri;
     this.entryId = util.getEntryIdFromUri(uri);
     this.title = title;
     this.tags = tags;
     this.content = content;
     this.slug = slug;
-    this.status = status;
     this.language = language;
+    this.status = status;
   }
 }
 
