@@ -130,7 +130,7 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <label for="tags">Tags:${this.getTagNames(article.tags)}</label><br>
                 <label for="slug">Slug:</label><br>
                 <input type="text" id="slug" name="slug" value="${article.slug}"><br>
-                <label for="language">Language:</label><br>
+                <label for="language">Language(ja/en/th):</label><br>
                 <input type="text" id="language" name="language" value="${article.language}"><br>
                 <input type="hidden" id="entryId" name="entryId" value="${article.entryId}">
                 ${buttonHtml}
