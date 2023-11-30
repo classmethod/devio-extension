@@ -70,15 +70,31 @@ export const newArticleCommand = (context: AppContext) => {
  * Function to update existing article entry
  * @return {function} - a function to update an article entry
  */
-export const updateArticleCommand = (context: AppContext, entryId?: any, title?: any, slug?: any, language?: any) => {
-  return async (entryId?: any, title?: any, slug?: any, language?: any) => {
+export const updateArticleCommand = (context: AppContext, entryId?: any, title?: any, slug?: any, language?: any, tags?: any) => {
+  return async (entryId?: any, title?: any, slug?: any, language?: any, tags?: any) => {
     let contentfulClient = ContentfulClient.getInstance();
     let entry = await contentfulClient.getEntry(entryId);
 
+    //translate tagName to tagId
+    const tagNameArray = tags.split(',');    
+    const idArray = tagNameArray.map((tagName: string) => {
+      let id = tag.getIdByName(tagName.trim());
+      if(id) {
+        return id.toString();
+      } else {
+        return "";
+      }
+    }).filter((item:any) => item !== "");
+    
     // Updating entry
     entry.fields.title['en-US'] = title;
     entry.fields.slug['en-US'] = slug;
     entry.fields.language['en-US'] = language;
+    if(!entry.fields.tags) {
+      entry.fields.tags = {};
+    }
+    entry.fields.tags['en-US'] = idArray;
+
 
     entry.update().then(async (updated) => {
       // Updating state

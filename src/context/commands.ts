@@ -40,12 +40,6 @@ export const initializeCommands = (context: AppContext, tviewProvider: ArticlesT
       "devio-extension.change-status-article",
       changeStatusCommand(context)
     ),
-
-    // Get&Store Latest Tags
-    vscode.commands.registerCommand(
-      "devio-extension.store-tags",
-      storeTagCommand(context)
-    ),
     // Open Browser for 
     vscode.commands.registerCommand(
       "devio-extension.open-browser",

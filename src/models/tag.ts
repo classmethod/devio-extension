@@ -33,12 +33,16 @@ let tagsMapById: Map<number, Tag> | undefined;
  */
 let tagsMapByName: Map<string, Tag> | undefined;
 
+/** All Tag Data(for suggest) */
+let allTags: any;
+
 /**
  * Initializes the data arrays and maps on application start
  */
 export function initializeData(tags: any) {
     tagsMapById = new Map(tags.map((tag: any) => [tag.id, tag]));
     tagsMapByName = new Map(tags.map((tag: any) => [tag.name, tag]));
+    allTags = tags;
 }
 
 /**
@@ -49,6 +53,10 @@ export function initializeData(tags: any) {
 export function getNameById(id: number): string | undefined {
     const tag = tagsMapById?.get(id);
     return tag ? tag.name : undefined;
+}
+
+export function getAllTags(): any {
+    return allTags;
 }
 
 /**

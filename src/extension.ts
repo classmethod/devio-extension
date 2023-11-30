@@ -7,11 +7,18 @@ import * as listeners from "./context/listeners";
 
 import { WebViewProvider } from "./webview/webViewProvider";
 import { ArticlesTreeViewProvider } from "./treeview/articlesTreeViewProvider";
+import { storeTagCommand } from "./commands/tag";
 
 /**
  * Initialize the extension.
  */
-async function initialize() {
+async function initialize(context: AppContext) {
+	// register Get&Store Latest Tags Command
+	context.extension.subscriptions.push(
+		vscode.commands.registerCommand("devio-extension.store-tags",
+			storeTagCommand(context))
+	);
+	
 	// Fetch the latest list of tags
 	await vscode.commands.executeCommand("devio-extension.store-tags");
 }
@@ -47,16 +54,15 @@ export function activate(extensionContext: vscode.ExtensionContext) {
 		conf: vscode.workspace.getConfiguration('contentful.general')
 	};
 
-	const tviewProvider = new ArticlesTreeViewProvider(context);
-	const webViewProvider = new WebViewProvider(context);
-	extensionContext.subscriptions.push(
-		...initializeCommands(context, tviewProvider),
-		...initializeTreeView(context, tviewProvider, webViewProvider),
-		...initializeWebView(context, webViewProvider),
-		listeners.initializeMarkdownSaveListener(context, webViewProvider)
-	);
-
-	initialize().then(async () => {
+	initialize(context).then(async () => {
+		const tviewProvider = new ArticlesTreeViewProvider(context);
+		const webViewProvider = new WebViewProvider(context);
+		extensionContext.subscriptions.push(
+			...initializeCommands(context, tviewProvider),
+			...initializeTreeView(context, tviewProvider, webViewProvider),
+			...initializeWebView(context, webViewProvider),
+			listeners.initializeMarkdownSaveListener(context, webViewProvider)
+		);
 		vscode.window.showInformationMessage("Extension initialized");
 	}, (reason: any) => {
 		console.error(reason);

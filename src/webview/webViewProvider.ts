@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as util from "../util";
-import { Tag } from "../models/tag";
+import { Tag, getAllTags } from "../models/tag";
 import { AppContext } from "../extension";
 import { ArticleContent, Status } from "../models/article";
 
@@ -8,9 +8,13 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
 
     private _view?: vscode.WebviewView;
     private readonly context: AppContext;
+    private cssUri?: vscode.Uri;
+    private jsUri?: vscode.Uri;
+    private allTags?: any | undefined;
 
     constructor(context: AppContext) {
         this.context = context;
+        this.allTags = getAllTags();
     }
 
     /**
@@ -61,12 +65,10 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
      * @returns タグ名の,区切り文字列
      */
     private getTagNames(tags: Tag[]): string {
-        let prefix = "【";
-        let suffix = "】";
         if (!tags || tags.length === 0) {
             return "";
         } else {
-            return tags.map(tag => `${prefix}${tag.name}${suffix}`).join(',');
+            return tags.map(tag => `${tag.name}`).join(',');
         }
     }
 
@@ -84,11 +86,17 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             </html>
             `;
         } else {
+
+            const tagNames = this.allTags.map((tag: any) => tag.name);
+            const tagNamesStr = JSON.stringify(tagNames);
             const buttonHtml = this.getEnableButtonByStatus(article.status);
             return `
             <!DOCTYPE html>
             <html>
             <head>
+                <link rel="stylesheet" href="${this.cssUri}" />
+                <script src="${this.jsUri}" async></script>
+
                 <style>
                     input {
                         margin-bottom: 10px;
@@ -96,19 +104,39 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                     }
                 </style>
                 <script>
+
+                var selectedTags = [];
+
+                window.addEventListener("load", function() {
+                    var input = document.getElementById("myTags");
+                    selectedTags = document.getElementById("selectedTags");
+                    input.addEventListener("awesomplete-selectcomplete", function(e) {
+                        if (selectedTags.value) {
+                            selectedTags.value += ',';
+                          }
+                        selectedTags.value += e.text;
+                        input.value = '';
+                    });
+                    var awesomplete = new Awesomplete(input);
+                    const list = ${tagNamesStr};
+                    awesomplete.list = list;
+                  });
+                
                 const vscode = acquireVsCodeApi();
                 function updateArticle() {
                     const entryId = document.getElementById('entryId').value;
                     const title = document.getElementById('title').value;
                     const slug = document.getElementById('slug').value;
                     const language = document.getElementById('language').value;
+                    const tags = document.getElementById('selectedTags').value;
                     
                     vscode.postMessage({
                         command: 'updateArticle',
                         entryId : entryId,
                         title: title,
                         slug: slug,
-                        language: language
+                        language: language,
+                        tags: tags
                     });
                 }
 
@@ -127,7 +155,10 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
                 <label for="status">Status:&nbsp;${article.status}</label><br>
                 <label for="title">Title:</label><br>
                 <input type="text" id="title" name="title" value="${article.title}"><br>
-                <label for="tags">Tags:${this.getTagNames(article.tags)}</label><br>
+                Tags:</br>
+                <input id="myTags" placeholder="タグ名で検索"/></br>
+                <label for="tags">設定するタグ(カンマ区切り):</label></br>
+                <input type="text" id="selectedTags" name="selectedTags" value="${this.getTagNames(article.tags)}"><br>
                 <label for="slug">Slug:</label><br>
                 <input type="text" id="slug" name="slug" value="${article.slug}"><br>
                 <label for="language">Language(ja/en/th):</label><br>
@@ -148,13 +179,23 @@ export class WebViewProvider implements vscode.WebviewViewProvider {
             enableScripts: true,
         };
 
+        this.cssUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extension.extensionUri,
+                "public", "awesomplete.css")
+        );
+
+        this.jsUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extension.extensionUri,
+                "public", "awesomplete.js")
+        );
+
         // Webviewからのメッセージをハンドル
         webviewView.webview.onDidReceiveMessage(
             message => {
                 switch (message.command) {
                     case 'updateArticle': // HTML側でpostMessageに指定したコマンド
                         vscode.commands.executeCommand('devio-extension.update-article',
-                            message.entryId, message.title, message.slug, message.language).then(() => {
+                            message.entryId, message.title, message.slug, message.language, message.tags).then(() => {
                                 //update view
                                 this.updateContent(message.entryId);
                             });
