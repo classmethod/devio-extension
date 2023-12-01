@@ -29,7 +29,7 @@
 }
 
 .awesomplete ul li:not(.awesomplete-highlight) {
-    color: gray;
+    color: black;
 }
 
 .awesomplete > ul:empty {
