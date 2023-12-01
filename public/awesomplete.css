@@ -28,6 +28,10 @@
     background: #fff;
 }
 
+.awesomplete ul li:not(.awesomplete-highlight) {
+    color: gray;
+}
+
 .awesomplete > ul:empty {
     display: none;
 }
