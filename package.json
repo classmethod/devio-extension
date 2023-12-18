@@ -2,6 +2,10 @@
   "name": "devio-extension",
   "displayName": "devio-extension",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/classmethod/devio-extension"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
