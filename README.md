@@ -74,10 +74,11 @@ https://app.contentful.com/spaces/<Space ID>/entries/<Entry ID>
 
 ### 画像アップロード・プレビュー
 
-現在VSCodeから
-* 直接画像をアップロードする方法
-* 記事のプレビューを作成する方法
-はありません。  
+現在、DevIO Extensionで下記処理は実行できません。
+
+* 直接画像をアップロードする
+* 記事のプレビューを作成する
+
 そのため、コンテキストメニューかコマンドパレットで  
 DevIO: Preview Active Editors Entry  
 を選択し、Contentfulの画面で処理を実施してください。  
@@ -87,8 +88,6 @@ DevIO: Preview Active Editors Entry
 記事のタイトル、slugを修正するには、ツリービューで記事を選択して
 ARTICLE INFORMATIONパネルのUpdate Articleボタンをクリックします。  
 また、記事本文の更新は対象のMarkdownファイルを保存すると実行されます。  
-
-タグについては取得のみ実装しています。  
 
 ### 記事の公開・非公開
 
