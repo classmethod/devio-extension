@@ -120,6 +120,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@types/diff-match-patch": "^1.0.36",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/vscode": "^1.82.0",
@@ -136,6 +137,7 @@
   },
   "dependencies": {
     "contentful-management": "^11.4.0",
+    "diff-match-patch": "^1.0.5",
     "yaml": "^2.3.3"
   }
 }
