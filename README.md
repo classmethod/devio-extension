@@ -4,7 +4,24 @@
 
 ## Install
 
+### 1. vsixファイルのダウンロード
+
 現在は配布されたvsixファイルを手動でインストールします。  
+
+1. [GitHub Actionsのページ](https://github.com/classmethod/devio-extension/actions/workflows/build-vsix.yml)を開く
+2. 一覧より、成功している（✅がついている）最新の1件をクリックする  
+   ![image](./docs/assets/howto-download-vsix-01.png)
+3. ページ下部のArtifactsにある、ダウンロードボタンをクリックする  
+   ![image](./docs/assets/howto-download-vsix-02.png)
+
+> [!NOTE]
+> ソースコードからビルドする場合は、以下の通り。
+> ```sh
+> npm install
+> npx vsce package
+> ```
+
+### 2. VSCodeへのインストール
 
 1. Visual Studio Codeを起動
 2. サイドバーの最下部にある四角いアイコン (Extensions) をクリック
